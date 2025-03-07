@@ -10,6 +10,7 @@ const app = express();
 // const accident = require("./routes/accident");
 // const maintenance = require("./routes/maintenance");
 // const telematics = require("./routes/telematics");
+const task = require("./routes/task");
 const auth = require("./middleware/auth");
 const authorization = require("./middleware/authorization");
 const { pool, connectDB, disconnectDB } = require("./db/db");
@@ -21,6 +22,7 @@ app.use(express.json());
 // app.use("/", authorization);
 // app.use("/register", auth);
 
+app.use("/api/task", task);
 // app.use("/api/vechicle", vechicle);
 // app.use("/api/driver", driver);
 // app.use("/api/gps", gpsData);
