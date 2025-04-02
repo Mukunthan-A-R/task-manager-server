@@ -1,43 +1,29 @@
 const express = require("express");
+const cors = require("cors"); // Import CORS middleware
 const app = express();
-// const vechicle = require("./routes/vehicle");
-// const driver = require("./routes/driver");
-// const gpsData = require("./routes/gpsData");
-// const roads = require("./routes/road");
-// const traffic = require("./routes/traffic");
-// const violation = require("./routes/violation");
-// const profile = require("./routes/driverProfile");
-// const accident = require("./routes/accident");
-// const maintenance = require("./routes/maintenance");
-// const telematics = require("./routes/telematics");
+
+// Import Routes and Middleware
 const task = require("./routes/task");
 const auth = require("./middleware/auth");
 const authorization = require("./middleware/authorization");
 const { pool, connectDB, disconnectDB } = require("./db/db");
-// const loggerMiddleware = require("./middleware/logger");
 
-connectDB();
-app.use(express.json());
-// app.use(loggerMiddleware);
-// app.use("/", authorization);
-// app.use("/register", auth);
+// Enable CORS for specific origin (your frontend URL)
+const corsOptions = {
+  origin: "http://localhost:5173", // Allow requests only from your frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
+  allowedHeaders: ["Content-Type"], // Specify allowed headers (e.g., Content-Type)
+};
 
-app.use("/api/task", task);
-// app.use("/api/vechicle", vechicle);
-// app.use("/api/driver", driver);
-// app.use("/api/gps", gpsData);
-// app.use("/api/road", roads);
-// app.use("/api/traffic", traffic);
-// app.use("/api/violation", violation);
-// app.use("/api/profile", profile);
-// app.use("/api/accident", accident);
-// app.use("/api/maintenance", maintenance);
-// app.use("/api/telematics", telematics);
+// Use CORS middleware
+app.use(cors(corsOptions));
 
+connectDB(); // Connect to the database
+app.use(express.json()); // Middleware to parse JSON request bodies
+
+// Routes
+app.use("/api/task", task); // Add the task route
+
+// Set the port and start the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
-
-// not null
-// foreign key constraint
-
-// module.exports = client;
