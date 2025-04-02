@@ -14,9 +14,9 @@ router.use(bodyParser.json());
 
 // Register Endpoint
 router.post("/", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, company } = req.body;
 
-  const { error } = validate({ name, email, password });
+  const { error } = validate({ name, email, password, company });
   if (error) return res.status(400).send(error.details[0].message);
 
   // Check if the email is already registered
@@ -32,12 +32,13 @@ router.post("/", async (req, res) => {
 
   // Insert new user into the database
   const insertUserQuery =
-    "INSERT INTO users (name, email, password , company) VALUES ($1, $2, $3, $4) RETURNING id, name, email";
+    "INSERT INTO users (full_name, email, password , company) VALUES ($1, $2, $3, $4) RETURNING user_id, full_name, email";
   try {
     const newUser = await pool.query(insertUserQuery, [
       name,
       email,
       hashedPassword,
+      company,
     ]);
     res
       .status(201)

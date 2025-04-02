@@ -22,6 +22,7 @@ connectDB(); // Connect to the database
 app.use(express.json()); // Middleware to parse JSON request bodies
 
 // Routes
+app.use("/api/register", auth);
 app.use("/api/task", task); // Add the task route
 
 // Set the port and start the server
