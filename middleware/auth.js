@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
 
   // Insert new user into the database
   const insertUserQuery =
-    "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email";
+    "INSERT INTO users (name, email, password , company) VALUES ($1, $2, $3, $4) RETURNING id, name, email";
   try {
     const newUser = await pool.query(insertUserQuery, [
       name,
@@ -55,6 +55,7 @@ const registerSchema = Joi.object({
   name: Joi.string().min(3).max(100).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).max(128).required(),
+  company: Joi.string().min(3).max(128).required(),
 });
 
 function validate(data) {
