@@ -49,7 +49,7 @@ const getTask = async (id) => {
 const createTask = async (data) => {
   const client = await pool.connect();
   const text = `
-    INSERT INTO tasks (title, description, time_duration, status, start_date, created)
+    INSERT INTO tasks (title, description, time_duration, status, end_date, created)
     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
   `;
   const values = [
@@ -76,7 +76,7 @@ const updateTask = async (id, data) => {
   const client = await pool.connect();
   const text = `
     UPDATE tasks
-    SET title = $1, description = $2, time_duration = $3, status = $4, start_date = $5, created = $6
+    SET title = $1, description = $2, time_duration = $3, status = $4, end_date = $5, created = $6
     WHERE task_id = $7 RETURNING *;
   `;
   const values = [
