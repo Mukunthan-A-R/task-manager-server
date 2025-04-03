@@ -1,4 +1,4 @@
-// model/task.js
+// model/tasks.js
 const { pool } = require("../db/db"); // Assuming pool is set up for DB connection
 
 // Utility function to handle errors
@@ -13,7 +13,7 @@ const handleError = (err) => {
 // Get all tasks
 const getAllTasks = async () => {
   const client = await pool.connect();
-  const text = "SELECT * FROM tasks"; // Assuming tasks is the table name
+  const text = "SELECT * FROM tasks"; // Assuming 'tasks' is the table name
   try {
     const res = await client.query(text);
     return { success: true, status: 200, data: res.rows };
@@ -49,16 +49,17 @@ const getTask = async (id) => {
 const createTask = async (data) => {
   const client = await pool.connect();
   const text = `
-    INSERT INTO tasks (title, description, time_duration, status, end_date, created)
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
+    INSERT INTO tasks (project_id, title, description, status, time_duration, start_date, end_date, created_date)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE) RETURNING *;
   `;
   const values = [
+    data.project_id, // The ID of the associated project
     data.title,
     data.description,
-    parseInt(data.time_duration),
     data.status,
+    data.time_duration,
     data.start_date,
-    data.created,
+    data.end_date,
   ];
 
   try {
@@ -76,16 +77,17 @@ const updateTask = async (id, data) => {
   const client = await pool.connect();
   const text = `
     UPDATE tasks
-    SET title = $1, description = $2, time_duration = $3, status = $4, end_date = $5, created = $6
-    WHERE task_id = $7 RETURNING *;
+    SET project_id = $1, title = $2, description = $3, status = $4, time_duration = $5, start_date = $6, end_date = $7
+    WHERE task_id = $8 RETURNING *;
   `;
   const values = [
+    data.project_id, // The ID of the associated project
     data.title,
     data.description,
-    parseInt(data.time_duration),
     data.status,
+    data.time_duration,
     data.start_date,
-    data.created,
+    data.end_date,
     parseInt(id),
   ];
 

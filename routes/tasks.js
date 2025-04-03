@@ -1,4 +1,4 @@
-// routes/taskRoutes.js
+// routes/tasks.js
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
@@ -8,7 +8,7 @@ const {
   createTask,
   updateTask,
   deleteTask,
-} = require("../models/task"); // Importing the model functions
+} = require("../models/tasks"); // Importing the model functions
 
 // Get all tasks
 router.get("/", async (req, res) => {
@@ -48,12 +48,15 @@ router.delete("/:id", async (req, res) => {
 
 // Task Schema using Joi for validation
 const taskSchema = Joi.object({
+  project_id: Joi.number().required(), // Project ID must be provided
   title: Joi.string().min(1).max(255).required(),
-  description: Joi.string().min(1).max(255).required(),
-  time_duration: Joi.number().min(1).max(10000).required(),
-  status: Joi.string().valid("pending", "in-progress", "completed").required(),
+  description: Joi.string().min(1).max(1000).optional(),
+  status: Joi.string()
+    .valid("not started", "in progress", "completed")
+    .optional(),
+  time_duration: Joi.number().min(1).max(10000).optional(),
   start_date: Joi.date().required(),
-  created: Joi.date().required(),
+  end_date: Joi.date().required(),
 });
 
 // Function to validate the task data using Joi
