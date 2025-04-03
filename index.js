@@ -4,6 +4,7 @@ const app = express();
 
 // Import Routes and Middleware
 const task = require("./routes/task");
+const project = require("./routes/projects");
 const auth = require("./middleware/auth");
 const authorization = require("./middleware/authorization");
 const { pool, connectDB, disconnectDB } = require("./db/db");
@@ -24,6 +25,7 @@ app.use(express.json()); // Middleware to parse JSON request bodies
 // Routes
 app.use("/api/register", auth);
 app.use("/api/task", task); // Add the task route
+app.use("/api/project", project);
 
 // Set the port and start the server
 const port = process.env.PORT || 3000;
