@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
 
   // Insert new user into the database
   const insertUserQuery =
-    "INSERT INTO users (full_name, email, password , company) VALUES ($1, $2, $3, $4) RETURNING user_id, full_name, email";
+    "INSERT INTO users (name, email, password , company) VALUES ($1, $2, $3, $4) RETURNING user_id, name, email";
   try {
     const newUser = await pool.query(insertUserQuery, [
       name,
