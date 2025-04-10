@@ -16,7 +16,9 @@ router.get("/:id", async (req, res) => {
     if (result.rows.length > 0) {
       res.status(200).json(result.rows);
     } else {
-      res.status(404).json({ message: "No tasks found for this project ID" });
+      res
+        .status(404)
+        .json({ data: [], message: "No tasks found for this project ID" });
     }
   } catch (err) {
     console.error(err);

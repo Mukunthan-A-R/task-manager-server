@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors"); // Import CORS middleware
+const cors = require("cors");
 const app = express();
 
 // Import Routes and Middleware
@@ -10,25 +10,37 @@ const auth = require("./middleware/auth");
 const authorization = require("./middleware/authorization");
 const { pool, connectDB, disconnectDB } = require("./db/db");
 
-// Enable CORS for specific origin (your frontend URL)
+// ✅ Updated CORS Configuration
 const corsOptions = {
-  origin: "http://localhost:5173", // Allow requests only from your frontend URL
-  methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
-  allowedHeaders: ["Content-Type"], // Specify allowed headers (e.g., Content-Type)
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173", // Dev
+      "https://doneittask.netlify.app", // Production
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"],
+  credentials: true, // optional: allow cookies/credentials if needed
 };
 
 // Use CORS middleware
 app.use(cors(corsOptions));
 
-connectDB(); // Connect to the database
-app.use(express.json()); // Middleware to parse JSON request bodies
+// DB connection and middleware
+connectDB();
+app.use(express.json()); // JSON body parser
 
-// Routes
+// API Routes
 app.use("/api/register", auth);
 app.use("/api/project", project);
-app.use("/api/task", task); // Add the task route
+app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
 
-// Set the port and start the server
+// Start server
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
