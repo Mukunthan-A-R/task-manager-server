@@ -16,6 +16,10 @@ const corsOptions = {
     const allowedOrigins = [
       "http://localhost:5173", // Dev
       "https://doneittask.netlify.app", // Production
+      "https://doneittask.netlify.app/dashboard",
+      "https://doneittask.netlify.app/tasks",
+      "https://doneittask.netlify.app/graph",
+      "https://doneittask.netlify.app/analytics",
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
