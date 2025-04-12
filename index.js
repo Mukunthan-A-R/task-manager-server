@@ -41,6 +41,7 @@ app.use(express.json()); // JSON body parser
 
 // API Routes
 app.use("/api/register", auth);
+app.use("/api/login", authorization);
 app.use("/api/project", project);
 app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
