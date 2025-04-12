@@ -3,7 +3,9 @@ CREATE TABLE users (
     first_name VARCHAR(100),
     last_name VARCHAR(100),
     email VARCHAR(255) UNIQUE,
-    role VARCHAR(50)
+    password VARCHAR(255), -- You’ll need this if storing user credentials
+    role VARCHAR(50),
+    company VARCHAR(100)
 );
 
 
