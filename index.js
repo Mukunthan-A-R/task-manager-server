@@ -25,6 +25,7 @@ app.use(express.json()); // Middleware to parse JSON request bodies
 
 // Routes
 app.use("/api/register", auth);
+app.use("/",authorization)
 app.use("/api/project", project);
 app.use("/api/task", task); // Add the task route
 app.use("/api/tasks", projectTasks);
