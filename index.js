@@ -7,6 +7,7 @@ const app = express();
 const task = require("./routes/tasks");
 const projectTasks = require("./routes/projectTasks");
 const project = require("./routes/projects");
+const userProject = require("./routes/userProjects");
 const auth = require("./middleware/auth");
 const authorization = require("./middleware/authorization");
 const { pool, connectDB, disconnectDB } = require("./db/db");
@@ -21,6 +22,7 @@ app.use(express.json()); // Middleware to parse JSON request bodies
 // Routes
 app.use("/api/register", auth);
 app.use("/",authorization)
+app.use("/project",userProject)
 app.use("/api/project", project);
 app.use("/api/task", task); // Add the task route
 app.use("/api/tasks", projectTasks);
