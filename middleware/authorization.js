@@ -59,7 +59,7 @@ router.post("/login", async (req, res) => {
 
 
 // Protected Route Example
-router.get("/profile", verifyToken, (req, res) => {
+router.get("/profile", (req, res) => {
   // Accessing user info from the decoded token
   const { userId, email } = req.user;
 
