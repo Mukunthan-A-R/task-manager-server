@@ -8,7 +8,7 @@ router.get("/:id", async (req, res) => {
   try {
     // Query the database to get tasks for the specific project
     const result = await pool.query(
-      "SELECT * FROM tasks WHERE user_id = $1",
+      "SELECT * FROM tasks WHERE created = $1",
       [projectId]
     );
 
