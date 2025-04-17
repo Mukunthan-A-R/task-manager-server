@@ -2,27 +2,33 @@ const express = require("express");
 const router = express.Router();
 const { pool } = require("../db/db");
 
+// Helper to send consistent response
+const sendResponse = (res, status, success, message, data = null) => {
+  res.status(status).json({
+    status,
+    success,
+    message,
+    data,
+  });
+};
+
 router.get("/:id", async (req, res) => {
   const projectId = parseInt(req.params.id);
 
   try {
-    // Query the database to get tasks for the specific project
     const result = await pool.query(
       "SELECT * FROM tasks WHERE project_id = $1",
       [projectId]
     );
 
-    // If tasks are found, return them; otherwise, send a 404 not found
     if (result.rows.length > 0) {
-      res.status(200).json(result.rows);
+      sendResponse(res, 200, true, "Tasks fetched successfully", result.rows);
     } else {
-      res
-        .status(404)
-        .json({ data: [], message: "No tasks found for this project ID" });
+      sendResponse(res, 404, false, "No tasks found for this project ID");
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Internal server error" });
+    sendResponse(res, 500, false, "Internal server error");
   }
 });
 

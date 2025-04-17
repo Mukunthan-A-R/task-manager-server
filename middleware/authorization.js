@@ -14,8 +14,7 @@ router.use(bodyParser.json());
 const JWT_SECRET = "your_jwt_secret_key";
 
 // Login Endpoint
-router.post("/", async (req, res) => {
-  // Validate login request body
+router.post("/login", async (req, res) => {
   const { error } = loginSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -23,52 +22,43 @@ router.post("/", async (req, res) => {
 
   const { email, password } = req.body;
 
-  // Check if user exists in the database
-  const checkUserQuery = "SELECT * FROM users WHERE email = $1";
-  const userResult = await pool.query(checkUserQuery, [email]);
+  try {
+    const checkUserQuery = "SELECT * FROM users WHERE email = $1";
+    const userResult = await pool.query(checkUserQuery, [email]);
 
-  if (userResult.rows.length === 0) {
-    return res.status(400).json({ message: "Invalid email or password" });
+    if (userResult.rows.length === 0) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const user = userResult.rows[0];
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Remove the password field before sending user data
+    const { password: _, ...userData } = user;
+
+    const token = jwt.sign(
+      { userId: user.user_id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: userData, // contains all fields except password
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error" });
   }
-
-  const user = userResult.rows[0];
-
-  // Compare the password with the hashed password in the database
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-    return res.status(400).json({ message: "Invalid email or password" });
-  }
-
-  // Generate JWT token
-  const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
-    expiresIn: "1h", // Set token expiration time (1 hour)
-  });
-
-  // Send the token to the client
-  res.status(200).json({ message: "Login successful", token });
 });
 
-// Middleware to verify JWT token for protected routes
-const verifyToken = (req, res, next) => {
-  const token = req.header("Authorization");
-
-  if (!token) {
-    return res
-      .status(403)
-      .json({ message: "Access denied. No token provided." });
-  }
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded; // Store user info in request
-    next();
-  } catch (err) {
-    res.status(400).json({ message: "Invalid or expired token" });
-  }
-};
-
 // Protected Route Example
-router.get("/profile", verifyToken, (req, res) => {
+router.get("/profile", (req, res) => {
   // Accessing user info from the decoded token
   const { userId, email } = req.user;
 
