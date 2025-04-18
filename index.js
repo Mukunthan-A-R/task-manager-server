@@ -5,6 +5,7 @@ const app = express();
 // Import Routes and Middleware
 const task = require("./routes/tasks");
 const projectTasks = require("./routes/projectTasks");
+const userProjects = require("./routes/userProjects");
 const user = require("./routes/users");
 const project = require("./routes/projects");
 const auth = require("./middleware/auth");
@@ -44,6 +45,7 @@ app.use(express.json()); // JSON body parser
 app.use("/", authorization);
 app.use("/api/register", auth);
 app.use("/api/project", project);
+app.use("/project", userProjects);
 app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
 
