@@ -41,6 +41,7 @@ connectDB();
 app.use(express.json()); // JSON body parser
 
 // API Routes
+app.use("/", authorization);
 app.use("/api/register", auth);
 app.use("/api/project", project);
 app.use("/api/task", task);
