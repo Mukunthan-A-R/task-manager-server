@@ -15,15 +15,15 @@ router.get("/:id", async (req, res) => {
     // If tasks are found, return them; otherwise, send a 404 not found
     if (result.rows.length > 0) {
       res.status(200).json({
-        status: 404,
+        status: 200,
         data: result.rows,
-        message: "Tasks Retrived successfully",
+        message: "Projects Retrived successfully",
       });
     } else {
       res.status(404).json({
         data: [],
         status: 404,
-        message: "No tasks found for this project ID",
+        message: "No Project found for this project ID",
       });
     }
   } catch (err) {
