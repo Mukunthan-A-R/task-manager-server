@@ -80,7 +80,7 @@ const updateUser = async (id, data) => {
   const query = `
     UPDATE users
     SET name = $1, role = $2, company = $3
-    WHERE user_id = $5
+    WHERE user_id = $4
     RETURNING user_id, name, email, company ,role
   `;
   const values = [data.name, data.role, data.company, parseInt(id)];
