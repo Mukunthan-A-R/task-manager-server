@@ -79,17 +79,11 @@ const updateUser = async (id, data) => {
   const client = await pool.connect();
   const query = `
     UPDATE users
-    SET name = $1, email = $2, password = $3, company = $4
+    SET name = $1, role = $2, company = $3
     WHERE user_id = $5
-    RETURNING user_id, name, email, company 
+    RETURNING user_id, name, email, company ,role
   `;
-  const values = [
-    data.name,
-    data.email,
-    data.password,
-    data.company,
-    parseInt(id),
-  ];
+  const values = [data.name, data.role, data.company, parseInt(id)];
 
   try {
     const res = await client.query(query, values);

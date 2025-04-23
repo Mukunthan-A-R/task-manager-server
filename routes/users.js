@@ -44,8 +44,8 @@ router.post("/", async (req, res) => {
 
 // Update user
 router.put("/:id", async (req, res) => {
-  const { error } = validateUser(req.body);
-  if (error) return res.status(400).send({ errors: error.details });
+  // const { error } = validateUser(req.body);
+  // if (error) return res.status(400).send({ errors: error.details });
 
   const data = await updateUser(req.params.id, req.body);
   res.status(data.status).send(data);
