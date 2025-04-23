@@ -48,6 +48,7 @@ app.use("/api/project", project);
 app.use("/project", userProjects);
 app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
+app.use("/api/user", user);
 
 // Start server
 const port = process.env.PORT || 3000;
