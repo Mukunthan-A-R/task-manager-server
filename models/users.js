@@ -12,7 +12,7 @@ const handleError = (err) => {
 // ✅ Get all users
 const getAllUsers = async () => {
   const client = await pool.connect();
-  const query = "SELECT user_id, name, email, company, created_at FROM users";
+  const query = "SELECT user_id, name, email, company, role FROM users";
 
   try {
     const res = await client.query(query);
@@ -28,7 +28,7 @@ const getAllUsers = async () => {
 const getUser = async (id) => {
   const client = await pool.connect();
   const query =
-    "SELECT user_id, name, email, company, created_at FROM users WHERE user_id = $1";
+    "SELECT user_id, name, email, company, role FROM users WHERE user_id = $1";
 
   try {
     const res = await client.query(query, [parseInt(id)]);
@@ -53,7 +53,7 @@ const createUser = async (data) => {
   const query = `
     INSERT INTO users (name, email, password, company)
     VALUES ($1, $2, $3, $4)
-    RETURNING user_id, name, email, company, created_at
+    RETURNING user_id, name, email, company, role
   `;
   const values = [data.name, data.email, data.password, data.company];
 
@@ -81,7 +81,7 @@ const updateUser = async (id, data) => {
     UPDATE users
     SET name = $1, email = $2, password = $3, company = $4
     WHERE user_id = $5
-    RETURNING user_id, name, email, company, created_at
+    RETURNING user_id, name, email, company 
   `;
   const values = [
     data.name,
