@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getTasksByUserId } = require("../models/tasks");
+const { getTasksByUserId } = require("../models/userTasks");
 
 // GET /tasks/user/:user_id — Get all tasks for a specific user
 router.get("/user/:user_id", async (req, res) => {
