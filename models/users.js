@@ -75,18 +75,32 @@ const createUser = async (data) => {
 };
 
 // ✅ Update user
+// ✅ Update user
 const updateUser = async (id, data) => {
   const client = await pool.connect();
+
+  // ✅ Basic input validation
+  if (!id || !data?.name || !data?.role || !data?.company) {
+    return {
+      success: false,
+      status: 400,
+      message: "Missing required fields: id, name, role, or company.",
+    };
+  }
+
   const query = `
     UPDATE users
     SET name = $1, role = $2, company = $3
     WHERE user_id = $4
-    RETURNING user_id, name, email, company ,role
+    RETURNING user_id, name, email, company, role
   `;
-  const values = [data.name, data.role, data.company, parseInt(id)];
+
+  // Assuming user_id is a string (UUID or TEXT)
+  const values = [data.name, data.role, data.company, id];
 
   try {
     const res = await client.query(query, values);
+
     if (res.rowCount === 0) {
       return {
         success: false,
@@ -94,9 +108,19 @@ const updateUser = async (id, data) => {
         message: `User with ID ${id} not found.`,
       };
     }
-    return { success: true, status: 200, data: res.rows[0] };
+
+    return {
+      success: true,
+      status: 200,
+      data: res.rows[0],
+    };
   } catch (err) {
-    return handleError(err);
+    console.error("Error updating user:", err); // helpful for debugging
+    return {
+      success: false,
+      status: 500,
+      error: "An unexpected error occurred while updating the user.",
+    };
   } finally {
     client.release();
   }
