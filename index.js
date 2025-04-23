@@ -8,7 +8,7 @@ const projectTasks = require("./routes/projectTasks");
 const userProjects = require("./routes/userProjects");
 const user = require("./routes/users");
 const project = require("./routes/projects");
-const tasksRoute = require("./routes/tasks");
+const userTasksRoute = require("./routes/userTasks");
 const auth = require("./middleware/auth");
 const authorization = require("./middleware/authorization");
 const { pool, connectDB, disconnectDB } = require("./db/db");
@@ -50,7 +50,7 @@ app.use("/project", userProjects);
 app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
 app.use("/api/user", user);
-app.use("/api/usertasks", tasksRoute);
+app.use("/api/usertasks", userTasksRoute);
 
 // Start server
 const port = process.env.PORT || 3000;
