@@ -14,9 +14,9 @@ router.use(bodyParser.json());
 
 // Register Endpoint
 router.post("/", async (req, res) => {
-  const { name, email, password, company } = req.body;
+  const { name, email, password, company, role } = req.body;
 
-  const { error } = validate({ name, email, password, company });
+  const { error } = validate({ name, email, password, company, role });
   if (error) return res.status(400).send(error.details[0].message);
 
   // Check if the email is already registered
@@ -32,13 +32,14 @@ router.post("/", async (req, res) => {
 
   // Insert new user into the database
   const insertUserQuery =
-    "INSERT INTO users (name, email, password , company) VALUES ($1, $2, $3, $4) RETURNING user_id, name, email";
+    "INSERT INTO users (name, email, password , company , role) VALUES ($1, $2, $3, $4 ,$5) RETURNING user_id, name, email";
   try {
     const newUser = await pool.query(insertUserQuery, [
       name,
       email,
       hashedPassword,
       company,
+      role,
     ]);
     res
       .status(201)
@@ -57,6 +58,7 @@ const registerSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(6).max(128).required(),
   company: Joi.string().min(3).max(128).required(),
+  role: Joi.string().min(2).max(128).required(),
 });
 
 function validate(data) {
