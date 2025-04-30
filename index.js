@@ -12,6 +12,7 @@ const userTasksRoute = require("./routes/userTasks");
 const auth = require("./middleware/auth");
 const authorization = require("./middleware/authorization");
 const projectCollabRoutes = require("./routes/projectCollab");
+const userEmailRoute = require("./routes/userEmail");
 const { pool, connectDB, disconnectDB } = require("./db/db");
 
 // ✅ Updated CORS Configuration
@@ -52,6 +53,7 @@ app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
 app.use("/api/user", user);
 app.use("/api/usertasks", userTasksRoute);
+app.use("/api/userEmail", userEmailRoute);
 app.use("/api/collab", projectCollabRoutes);
 
 // Start server
