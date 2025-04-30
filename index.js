@@ -11,6 +11,7 @@ const project = require("./routes/projects");
 const userTasksRoute = require("./routes/userTasks");
 const auth = require("./middleware/auth");
 const authorization = require("./middleware/authorization");
+const projectCollabRoutes = require("./routes/projectCollab");
 const { pool, connectDB, disconnectDB } = require("./db/db");
 
 // ✅ Updated CORS Configuration
@@ -51,6 +52,7 @@ app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
 app.use("/api/user", user);
 app.use("/api/usertasks", userTasksRoute);
+app.use("/api/collab", projectCollabRoutes);
 
 // Start server
 const port = process.env.PORT || 3000;
