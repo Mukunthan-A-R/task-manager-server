@@ -37,7 +37,7 @@ const getAssignmentById = async (id) => {
         message: `Assignment with ID ${id} not found.`,
       };
     }
-    return { success: true, status: 200, data: res.rows[0] };
+    return { success: true, status: 200, data: res.rows };
   } catch (err) {
     return handleError(err);
   } finally {
