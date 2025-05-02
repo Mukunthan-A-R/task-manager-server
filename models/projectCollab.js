@@ -27,8 +27,7 @@ const getAllAssignments = async () => {
 // Get an assignment by ID
 const getAssignmentById = async (id) => {
   const client = await pool.connect();
-  const text =
-    "SELECT * FROM user_project_assignments WHERE assignment_id = $1";
+  const text = "SELECT * FROM user_project_assignments WHERE project_id = $1";
   try {
     const res = await client.query(text, [parseInt(id)]);
     if (res.rowCount === 0) {
