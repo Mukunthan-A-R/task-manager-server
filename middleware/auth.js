@@ -3,6 +3,7 @@ const { pool } = require("../db/db");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const bodyParser = require("body-parser");
+const confirmEmail = require("../utils/confirmEmail");
 
 const router = express();
 // Middleware to parse JSON
@@ -41,9 +42,19 @@ router.post("/", async (req, res) => {
       company,
       role,
     ]);
-    res
-      .status(201)
-      .json({ message: "User registered successfully", user: newUser.rows[0] });
+
+    if (newUser) {
+      const resetUrl = "https://doneitapp.netlify.app/";
+      await confirmEmail(email, name, resetUrl);
+      // console.log(process.env.EMAIL_USER, process.env.EMAIL_APP_PASSWORD);
+    } else {
+      console.error(err);
+      res.status(500).json({ message: "Failed to Register User System Error" });
+    }
+    res.status(201).json({
+      message: "User registered successfully",
+      user: newUser.rows[0],
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
