@@ -11,7 +11,7 @@ const router = express();
 router.use(bodyParser.json());
 
 // Secret key for JWT (should be stored in an environment variable)
-const JWT_SECRET = "your_jwt_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Login Endpoint
 router.post("/login", async (req, res) => {
