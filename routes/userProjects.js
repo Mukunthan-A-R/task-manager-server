@@ -3,7 +3,9 @@ const router = express.Router();
 const { pool } = require("../db/db");
 
 router.get("/:id", async (req, res) => {
-  const projectId = req.params.id;
+  let projectId = req.params.id;
+
+  projectId = parseInt(req.params.id, 10);
 
   try {
     // Query the database to get tasks for the specific project
