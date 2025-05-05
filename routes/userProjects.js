@@ -5,16 +5,6 @@ const { pool } = require("../db/db");
 router.get("/:id", async (req, res) => {
   const projectId = req.params.id;
 
-  // Check if the input is a valid date string (optional but recommended)
-  const isValidDate = !isNaN(Date.parse(projectId));
-  if (!isValidDate) {
-    return res.status(400).json({
-      status: 400,
-      data: [],
-      message: "Invalid timestamp. Please provide a valid date.",
-    });
-  }
-
   try {
     // Query the database to get tasks for the specific project
     const result = await pool.query(
