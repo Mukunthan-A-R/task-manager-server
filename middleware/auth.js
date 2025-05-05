@@ -44,8 +44,8 @@ router.post("/", async (req, res) => {
     ]);
 
     if (newUser) {
-      const resetUrl = "https://doneitapp.netlify.app/";
-      await confirmEmail(email, name, resetUrl);
+      const activationLink = "https://doneitapp.netlify.app/";
+      await confirmEmail(email, name, activationLink);
       // console.log(process.env.EMAIL_USER, process.env.EMAIL_APP_PASSWORD);
     } else {
       console.error(err);
