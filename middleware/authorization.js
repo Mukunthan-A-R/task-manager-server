@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
+const { verifyUserById } = require("../models/userVerify");
 
 const router = express();
 
@@ -54,6 +55,50 @@ router.post("/login", async (req, res) => {
     });
   } catch (err) {
     console.error("Login error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// GET /users/activate/:id
+router.get("/user/activate/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Example: fetch user from a database (replace with real DB logic)
+    const user = await verifyUserById(userId); // Assume this is your DB call
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.send(
+      `
+    
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Activation</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 40px; text-align: center; }
+    .container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+    h1 { color: #2e7d32; }
+    a { display: inline-block; background: #0052cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Account Activated!</h1>
+    <p>Hi <span id="user-name"></span>, your account is now active.</p>
+    <p>You can close this window !</p>
+  </div>
+</body>
+
+
+      `
+    );
+    // .json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
     res.status(500).json({ message: "Server error" });
   }
 });

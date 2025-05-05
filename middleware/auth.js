@@ -44,7 +44,8 @@ router.post("/", async (req, res) => {
     ]);
 
     if (newUser) {
-      const activationLink = "https://doneitapp.netlify.app/";
+      const activationLink = `http://localhost:3000/user/activate/${newUser.rows[0].user_id}`;
+
       await confirmEmail(email, name, activationLink);
       // console.log(process.env.EMAIL_USER, process.env.EMAIL_APP_PASSWORD);
     } else {
