@@ -73,7 +73,6 @@ router.get("/user/activate/:id", async (req, res) => {
 
     res.send(
       `
-    
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -92,7 +91,6 @@ router.get("/user/activate/:id", async (req, res) => {
     <p>You can close this window !</p>
   </div>
 </body>
-
 
       `
     );
