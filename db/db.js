@@ -8,12 +8,14 @@ const { Pool } = require("pg");
 //   port: 5432,
 // });
 
+postgresql://done_it_61xv_user:tgP8MORf4WhWhNGDCFhUUmB0MuMVmXF2@dpg-d0dgd095pdvs7395905g-a.singapore-postgres.render.com/done_it_61xv
+
 // Render server
 const pool = new Pool({
-  user: "done_it_user", // Replace with your PostgreSQL username
-  host: "dpg-cvpbn9ngi27c73b38lo0-a",
-  database: "done_it", // Replace with your database name
-  password: "Pzi1mPhvkrbx14qyc02DRmiLmR1MTZVC", // Replace with your PostgreSQL password
+  user: "done_it_61xv_user", // Replace with your PostgreSQL username
+  host: "dpg-d0dgd095pdvs7395905g-a",
+  database: "done_it_61xv", // Replace with your database name
+  password: "tgP8MORf4WhWhNGDCFhUUmB0MuMVmXF2", // Replace with your PostgreSQL password
   port: 5432,
 });
 
