@@ -33,3 +33,23 @@ CREATE TABLE tasks (
     end_date DATE,                             -- End date of the task
     created_date DATE DEFAULT CURRENT_DATE     -- Date when the task was created (defaults to current date)
 );
+
+CREATE TABLE user_project_assignments (
+  id SERIAL PRIMARY KEY, -- Unique identifier for each assignment
+
+  user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+  -- ✅ Corrected: Now references the actual primary key in 'users'
+
+  project_id INTEGER NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE,
+  -- ✅ Corrected: Now references the actual primary key in 'projects'
+
+  role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'manager', 'member', 'client')),
+  -- Role of the user in the project; must be one of the allowed values
+
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
+  -- Status of the assignment; defaults to 'pending'
+
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
