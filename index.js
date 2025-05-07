@@ -4,17 +4,18 @@ require("dotenv").config();
 
 const app = express();
 
-// ✅ Allow all origins
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+// ✅ CORS configuration to allow all origins
+const corsOptions = {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-// ✅ Handle preflight (OPTIONS) requests
-app.options("*", cors());
+// ✅ Apply CORS middleware globally
+app.use(cors(corsOptions));
+
+// ✅ Handle preflight (OPTIONS) requests for all routes
+app.options("*", cors(corsOptions));
 
 // ✅ Body parser
 app.use(express.json());
@@ -24,6 +25,7 @@ const { connectDB } = require("./db/db");
 connectDB();
 
 // ✅ Middleware and Routes
+const authMiddleware = require("./middleware/authMiddleware");
 const task = require("./routes/tasks");
 const projectTasks = require("./routes/projectTasks");
 const userProjects = require("./routes/userProjects");
@@ -40,6 +42,7 @@ const passwordReset = require("./routes/passwordReset.js");
 // ✅ Route mounts
 app.use("/", authorization);
 app.use("/api/register", auth);
+app.use(authMiddleware);
 app.use("/api/project", project);
 app.use("/project", userProjects);
 app.use("/api/task", task);
