@@ -18,7 +18,9 @@ function authMiddleware(req, res, next) {
     req.user = decoded;
     next(); // proceed if verified
   } catch (err) {
-    return res.status(401).json({ message: "Invalid auth token" }); // <-- must return here too
+    return res
+      .status(401)
+      .json({ message: "Auth token Expired", reset: "true" }); // <-- must return here too
   }
   //   return res.status(200).json({ message: "You are allowed" });
 }
