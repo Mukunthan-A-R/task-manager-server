@@ -3,12 +3,16 @@ const router = express.Router();
 const { pool } = require("../db/db");
 
 router.get("/:id", async (req, res) => {
-  let projectId = req.params.id;
+  const projectId = parseInt(req.params.id, 10);
 
-  projectId = parseInt(req.params.id, 10);
+  if (isNaN(projectId)) {
+    return res.status(400).json({
+      status: 400,
+      message: "Invalid project ID provided.",
+    });
+  }
 
   try {
-    // Query the database to get tasks for the specific project
     const result = await pool.query(
       "SELECT * FROM projects WHERE created = $1",
       [projectId]
