@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { hasProjectAccess } = require("../models/projectAccess");
 const { pool } = require("../db/db");
 
 // Helper to send consistent response
@@ -14,8 +15,14 @@ const sendResponse = (res, status, success, message, data = null) => {
 
 router.get("/:id", async (req, res) => {
   const projectId = parseInt(req.params.id);
+  const userId = req.user.userId;
 
   try {
+    const accessGranted = await hasProjectAccess(userId, projectId);
+    if (!accessGranted) {
+      return sendResponse(res, 403, false, "Access denied");
+    }
+
     const result = await pool.query(
       "SELECT * FROM tasks WHERE project_id = $1",
       [projectId]
