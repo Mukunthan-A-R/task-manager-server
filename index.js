@@ -38,6 +38,7 @@ const projectCollabRoutes = require("./routes/projectCollab");
 const fetchCollabProjects = require("./routes/fetchCollabProjects");
 const userEmailRoute = require("./routes/userEmail");
 const passwordReset = require("./routes/passwordReset.js");
+const userPasswordRoute = require("./routes/userPassword");
 
 // ✅ Route mounts
 app.use("/", authorization);
@@ -53,6 +54,7 @@ app.use("/api/userEmail", userEmailRoute);
 app.use("/api/collab", projectCollabRoutes);
 app.use("/api/collab-projects", fetchCollabProjects);
 app.use("/api/password-reset", passwordReset);
+app.use("/api/user-password", userPasswordRoute);
 
 // ✅ Start server
 const port = process.env.PORT || 3000;
