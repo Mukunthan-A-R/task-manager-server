@@ -41,6 +41,7 @@ router.post("/", async (req, res) => {
 
   // Build description string automatically based on action & context
   let description = "";
+  console.log(context);
 
   switch (action) {
     case "create":
