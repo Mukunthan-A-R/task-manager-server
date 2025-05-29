@@ -50,11 +50,10 @@ router.post("/", async (req, res) => {
       } <${user.email}>`;
       break;
     case "update":
-      description = `Updated ${context?.field || "a field"} to "${
-        context?.newValue
-      }" on task "${context?.title || "Unknown Task"}" by ${user.name} <${
-        user.email
-      }>`;
+      description = `Update on task "${context?.title || "Unknown Task"}" by ${
+        user.name
+      } <${user.email}>`;
+      // ${context?.field || "a field"} to ${ context?.newValue || ""      }
       break;
     case "delete":
       description = `Deleted task: ${context?.title || "Unnamed Task"} by ${
