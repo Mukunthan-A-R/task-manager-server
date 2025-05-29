@@ -60,7 +60,7 @@ router.post("/", async (req, res) => {
         user.name
       } <${user.email}>`;
       break;
-    case "status_change":
+    case "status-change":
       description = `Changed task status from "${context?.oldStatus}" to "${
         context?.newStatus
       }" for task "${context?.title || ""}" by ${user.name} <${user.email}>`;
