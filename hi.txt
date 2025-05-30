@@ -46,3 +46,17 @@ CREATE TABLE user_project_assignments (
 );
 
 
+
+-- Create the table "project_activity_logs "
+CREATE TABLE project_activity_logs (
+    log_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id) ON DELETE SET NULL,         -- Who performed the action
+    project_id INT REFERENCES projects(project_id) ON DELETE CASCADE, -- Which project the activity belongs to
+    task_id INT,                                                      -- Which task was involved (no FK to preserve on delete)
+    action VARCHAR(50) NOT NULL,                                      -- e.g. 'create', 'delete', 'update', 'status_change'
+    description TEXT NOT NULL,                                        -- Human-readable message describing the activity
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
