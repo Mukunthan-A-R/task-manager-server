@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
 
   switch (action) {
     case "create":
-      description = `Created task: ${context?.title || "Untitled Task"} by ${
+      description = `Created task: "${context?.title || "Untitled Task"}" by ${
         user.name
       } <${user.email}>`;
       break;
@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
       // ${context?.field || "a field"} to ${ context?.newValue || ""      }
       break;
     case "delete":
-      description = `Deleted task: ${context?.title || "Unnamed Task"} by ${
+      description = `Deleted task: "${context?.title || "Unnamed Task"}" by ${
         user.name
       } <${user.email}>`;
       break;
