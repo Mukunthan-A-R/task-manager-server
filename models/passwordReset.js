@@ -1,27 +1,50 @@
 const { pool } = require("../db/db");
 
-// ✅ Get one user by ID
+// Get user by email
 const getUserByEmail = async (email) => {
-  const client = await pool.connect();
-  const query =
-    "SELECT user_id, name, email, company, role FROM users WHERE email = $1";
-
-  try {
-    const res = await client.query(query, [email]);
-    if (res.rowCount === 0) {
-      return {
-        success: false,
-        status: 404,
-        message: `User with email ${email} not found.`,
-      };
-    }
-
-    return { success: true, status: 200, data: res.rows[0] };
-  } catch (err) {
-    return err;
-  } finally {
-    client.release();
-  }
+  const res = await pool.query(
+    `SELECT user_id, name FROM users WHERE email = $1`,
+    [email]
+  );
+  return res.rows[0];
 };
 
-module.exports = { getUserByEmail };
+// Insert or update reset token
+const upsertResetToken = async (userId, token, expiresAt) => {
+  await pool.query(
+    `INSERT INTO password_resets (user_id, token, expires_at)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (user_id) DO UPDATE SET token = $2, expires_at = $3`,
+    [userId, token, expiresAt]
+  );
+};
+
+// Get valid token
+const getValidToken = async (token) => {
+  const res = await pool.query(
+    `SELECT user_id FROM password_resets WHERE token = $1 AND expires_at > NOW()`,
+    [token]
+  );
+  return res.rows[0];
+};
+
+// Update user password
+const updateUserPassword = async (userId, hashedPassword) => {
+  await pool.query(`UPDATE users SET password = $1 WHERE user_id = $2`, [
+    hashedPassword,
+    userId,
+  ]);
+};
+
+// Delete token
+const deleteResetToken = async (userId) => {
+  await pool.query(`DELETE FROM password_resets WHERE user_id = $1`, [userId]);
+};
+
+module.exports = {
+  getUserByEmail,
+  upsertResetToken,
+  getValidToken,
+  updateUserPassword,
+  deleteResetToken,
+};

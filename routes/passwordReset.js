@@ -1,32 +1,62 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require("uuid");
+const sendPasswordResetEmail = require("../utils/passwordReset");
+const {
+  getUserByEmail,
+  upsertResetToken,
+  getValidToken,
+  updateUserPassword,
+  deleteResetToken,
+} = require("../models/passwordReset");
+
 const router = express.Router();
 
-const { getUserByEmail } = require("../models/passwordReset");
-const sendPasswordResetEmail = require("../utils/passwordReset");
-
-router.get("/", async (req, res) => {
+// POST /reset/request
+router.post("/request", async (req, res) => {
   const { email } = req.body;
 
+  console.log(email);
+
   try {
-    const result = await getUserByEmail(email);
+    const user = await getUserByEmail(email);
+    console.log(user);
 
-    if (result.status != 404) {
-      activationLink = "https://doneitapp.netlify.app/";
-      const name = result.data.name;
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-      await sendPasswordResetEmail(email, name, activationLink);
-      res.status(200).json({
-        message: "User Data sent Successfully",
-        user: result,
-      });
-    } else {
-      res.status(400).json({
-        message: "User Data not found",
-      });
-    }
+    const token = uuidv4();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    await upsertResetToken(user.user_id, token, expiresAt);
+
+    const resetUrl = `${process.env.DONE_IT_SERVER}/reset-password/${token}`;
+    await sendPasswordResetEmail(email, user.name, resetUrl);
+    console.log(resetUrl);
+
+    res.json({ message: "Password reset email sent" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// POST /reset/confirm
+router.post("/confirm", async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const tokenData = await getValidToken(token);
+    if (!tokenData)
+      return res.status(400).json({ message: "Invalid or expired token" });
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await updateUserPassword(tokenData.user_id, hashed);
+    await deleteResetToken(tokenData.user_id);
+
+    res.json({ message: "Password has been reset successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

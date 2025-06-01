@@ -44,7 +44,8 @@ const projectActivityRoutes = require("./routes/projectActivity");
 // ✅ Route mounts
 app.use("/", authorization);
 app.use("/api/register", auth);
-app.use(authMiddleware);
+app.use("/api/password-reset", passwordReset);
+// app.use(authMiddleware);
 
 app.use("/api/project", project);
 app.use("/project", userProjects);
@@ -55,7 +56,6 @@ app.use("/api/usertasks", userTasksRoute);
 app.use("/api/userEmail", userEmailRoute);
 app.use("/api/collab", projectCollabRoutes);
 app.use("/api/collab-projects", fetchCollabProjects);
-app.use("/api/password-reset", passwordReset);
 app.use("/api/user-password", userPasswordRoute);
 app.use("/api/project-activity", projectActivityRoutes);
 
