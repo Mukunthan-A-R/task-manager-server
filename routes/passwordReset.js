@@ -20,7 +20,6 @@ router.post("/request", async (req, res) => {
 
   try {
     const user = await getUserByEmail(email);
-    console.log(user);
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -29,9 +28,8 @@ router.post("/request", async (req, res) => {
 
     await upsertResetToken(user.user_id, token, expiresAt);
 
-    const resetUrl = `${process.env.DONE_IT_SERVER}/reset-password/${token}`;
+    const resetUrl = `${process.env.DONE_IT_CLIENT}/forgot-password/${token}`;
     await sendPasswordResetEmail(email, user.name, resetUrl);
-    console.log(resetUrl);
 
     res.json({ message: "Password reset email sent" });
   } catch (err) {
