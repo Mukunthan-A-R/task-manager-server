@@ -45,7 +45,7 @@ const projectActivityRoutes = require("./routes/projectActivity");
 app.use("/", authorization);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
-// app.use(authMiddleware);
+app.use(authMiddleware);
 
 app.use("/api/project", project);
 app.use("/project", userProjects);
