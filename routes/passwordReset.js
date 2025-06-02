@@ -15,9 +15,6 @@ const router = express.Router();
 // POST /reset/request
 router.post("/request", async (req, res) => {
   const { email } = req.body;
-
-  console.log(email);
-
   try {
     const user = await getUserByEmail(email);
 
