@@ -22,7 +22,7 @@ router.get("/:projectId", async (req, res) => {
 
 // POST new activity log
 router.post("/", async (req, res) => {
-  const { user_id, project_id, task_id, action, context } = req.body;
+  let { user_id, project_id, task_id, action, context } = req.body;
 
   if (!user_id || !project_id || !action) {
     return res
@@ -41,7 +41,6 @@ router.post("/", async (req, res) => {
 
   // Build description string automatically based on action & context
   let description = "";
-  console.log(context);
 
   switch (action) {
     case "create":
@@ -49,21 +48,37 @@ router.post("/", async (req, res) => {
         user.name
       } <${user.email}>`;
       break;
+
     case "update":
       description = `Update on task "${context?.title || "Unknown Task"}" by ${
         user.name
       } <${user.email}>`;
-      // ${context?.field || "a field"} to ${ context?.newValue || ""      }
       break;
+
     case "delete":
       description = `Deleted task: "${context?.title || "Unnamed Task"}" by ${
         user.name
       } <${user.email}>`;
       break;
+
     case "status-change":
       description = `Changed task status from "${context?.oldStatus}" to "${
         context?.newStatus
       }" for task "${context?.title || ""}" by ${user.name} <${user.email}>`;
+      break;
+
+    case "add-user":
+      description = `Added user ${context?.addedUserName || "Unknown"} <${
+        context?.addedUserEmail || "unknown@example.com"
+      }> to the project by ${user.name} <${user.email}>`;
+      task_id = null;
+      break;
+
+    case "remove-user":
+      description = `Removed user ${context?.targetUserName || "Unknown"} <${
+        context?.targetUserEmail || "unknown@example.com"
+      }> from the project by ${user.name} <${user.email}>`;
+      task_id = null;
       break;
 
     default:
