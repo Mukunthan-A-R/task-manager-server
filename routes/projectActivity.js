@@ -70,14 +70,14 @@ router.post("/", async (req, res) => {
     case "add-user":
       description = `Added user ${context?.addedUserName || "Unknown"} <${
         context?.addedUserEmail || "unknown@example.com"
-      }> to the project by ${user.name} <${user.email}>`;
+      }> to the project by  ${user.name} <${user.email}>`;
       task_id = null;
       break;
 
     case "remove-user":
       description = `Removed user ${context?.targetUserName || "Unknown"} <${
         context?.targetUserEmail || "unknown@example.com"
-      }> from the project by ${user.name} <${user.email}>`;
+      }> from the project by  ${user.name} <${user.email}>`;
       task_id = null;
       break;
 
