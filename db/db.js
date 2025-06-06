@@ -1,7 +1,5 @@
 const { Pool } = require("pg");
 
-const { Pool } = require("pg");
-
 const pool = new Pool({
   user: "done it_owner",
   host: "ep-muddy-salad-a1tuw1up-pooler.ap-southeast-1.aws.neon.tech",
