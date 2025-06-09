@@ -6,7 +6,11 @@ const app = express();
 
 // ✅ CORS configuration to allow all origins
 const corsOptions = {
-  origin: "*",
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5186",
+    "https://doneitapp.netlify.app",
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
