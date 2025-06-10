@@ -30,6 +30,8 @@ router.get("/:id", async (req, res) => {
 
     if (result.rows.length > 0) {
       sendResponse(res, 200, true, "Tasks fetched successfully", result.rows);
+    } else if (result.rows.length === 0) {
+      sendResponse(res, 200, true, "Create your first Task !", result.rows);
     } else {
       sendResponse(res, 404, false, "No tasks found for this project ID");
     }
