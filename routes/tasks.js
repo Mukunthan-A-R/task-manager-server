@@ -57,6 +57,7 @@ const taskSchema = Joi.object({
   time_duration: Joi.number().min(1).max(10000).optional(),
   start_date: Joi.date().required(),
   end_date: Joi.date().required(),
+  user_id: Joi.number().required().min(1),
 });
 
 // Function to validate the task data using Joi

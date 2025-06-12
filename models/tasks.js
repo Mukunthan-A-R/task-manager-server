@@ -49,8 +49,8 @@ const getTask = async (id) => {
 const createTask = async (data) => {
   const client = await pool.connect();
   const text = `
-    INSERT INTO tasks (project_id, title, description, status, time_duration, start_date, end_date, created_date)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE) RETURNING *;
+    INSERT INTO tasks (project_id, title, description, status, time_duration, start_date, end_date, created_date, created_by)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE, $8) RETURNING *;
   `;
   const values = [
     data.project_id, // The ID of the associated project
@@ -60,6 +60,7 @@ const createTask = async (data) => {
     data.time_duration,
     data.start_date,
     data.end_date,
+    data.user_id,
   ];
 
   try {
@@ -77,7 +78,7 @@ const updateTask = async (id, data) => {
   const client = await pool.connect();
   const text = `
     UPDATE tasks
-    SET project_id = $1, title = $2, description = $3, status = $4, time_duration = $5, start_date = $6, end_date = $7
+    SET project_id = $1, title = $2, description = $3, status = $4, time_duration = $5, start_date = $6, end_date = $7, created_by = $9
     WHERE task_id = $8 RETURNING *;
   `;
   const values = [
@@ -89,6 +90,7 @@ const updateTask = async (id, data) => {
     data.start_date,
     data.end_date,
     parseInt(id),
+    data.user_id,
   ];
 
   try {
