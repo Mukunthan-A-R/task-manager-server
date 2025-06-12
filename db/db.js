@@ -1,36 +1,25 @@
 const { Pool } = require("pg");
 
 const pool = new Pool({
-  user: "done it_owner",
-  host: "ep-muddy-salad-a1tuw1up-pooler.ap-southeast-1.aws.neon.tech",
-  database: "done it",
-  password: "npg_7aG2SefhEKor",
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
   ssl: {
-    rejectUnauthorized: false, // Required for Neon
+    require: true,
   },
 });
 
-// const pool = new Pool({
-//   user: "postgres", // Replace with your PostgreSQL username
-//   host: "localhost",
-//   database: "doneit", // Replace with your database name
-//   password: "Password123$", // Replace with your PostgreSQL password
-//   port: 5432,
-// });
-
-// Render server
-// const pool = new Pool({
-//   user: "done_it_61xv_user", // Replace with your PostgreSQL username
-//   host: "dpg-d0dgd095pdvs7395905g-a",
-//   database: "done_it_61xv", // Replace with your database name
-//   password: "tgP8MORf4WhWhNGDCFhUUmB0MuMVmXF2", // Replace with your PostgreSQL password
-//   port: 5432,
-// });
+const errorHandler = (error) => {
+  console.error(`[DB ERROR]: ${error.message}`);
+  console.error(error);
+};
 
 const connectDB = async () => {
   try {
     const client = await pool.connect(); // Get a client from the pool
+    pool.on("error", errorHandler);
     console.log("Connected to PostgreSQL");
     return client;
   } catch (err) {
@@ -45,6 +34,7 @@ const disconnectDB = async () => {
     console.log("Disconnected from PostgreSQL");
   } catch (err) {
     console.error("Disconnection error", err.stack);
+    pool.off("error", errorHandler);
   }
 };
 
