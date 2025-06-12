@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const { connectDB } = require("./db/db");
+const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
 
@@ -25,11 +27,9 @@ app.options("*", cors(corsOptions));
 app.use(express.json());
 
 // ✅ DB connection
-const { connectDB } = require("./db/db");
 connectDB();
 
 // ✅ Middleware and Routes
-const authMiddleware = require("./middleware/authMiddleware");
 const task = require("./routes/tasks");
 const projectTasks = require("./routes/projectTasks");
 const userProjects = require("./routes/userProjects");
@@ -44,12 +44,14 @@ const userEmailRoute = require("./routes/userEmail");
 const passwordReset = require("./routes/passwordReset.js");
 const userPasswordRoute = require("./routes/userPassword");
 const projectActivityRoutes = require("./routes/projectActivity");
+const { loggerMiddleware } = require("./middleware/logger.js");
 
 // ✅ Route mounts
 app.use("/", authorization);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
 app.use(authMiddleware);
+app.use(loggerMiddleware);
 
 app.use("/api/project", project);
 app.use("/project", userProjects);

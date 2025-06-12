@@ -2,24 +2,25 @@ const winston = require("winston");
 
 const logger = winston.createLogger({
   level: "info",
-  format: winston.format.json(),
-  transports: [
-    // new winston.transports.Console({ format: winston.format.simple() }),
-    new winston.transports.File({ filename: "logs/server.log" }),
-  ],
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+    }),
+  ),
+  transports: [new winston.transports.Console()],
 });
 
 // Logger middleware using Winston
 const loggerMiddleware = (req, res, next) => {
-  const currentDate = new Date();
   const method = req.method;
   const url = req.originalUrl;
   const ip = req.ip;
 
   logger.info(
-    `[${currentDate.toISOString()}] ${method} request to ${url} from ${ip}`
+    `${method} request to ${url} from ${ip} [user_id: ${req.user.userId}]`,
   );
   next();
 };
 
-module.exports = loggerMiddleware;
+module.exports = { loggerMiddleware };
