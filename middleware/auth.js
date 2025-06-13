@@ -1,5 +1,5 @@
 const express = require("express");
-const { pool } = require("../db/db");
+const { connectDB, disconnectDB } = require("../db/db");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const bodyParser = require("body-parser");
@@ -20,9 +20,10 @@ router.post("/", async (req, res) => {
   const { error } = validate({ name, email, password, company, role });
   if (error) return res.status(400).send(error.details[0].message);
 
+  const client = await connectDB();
   // Check if the email is already registered
   const checkEmailQuery = "SELECT * FROM users WHERE email = $1";
-  const existingUser = await pool.query(checkEmailQuery, [email]);
+  const existingUser = await client.query(checkEmailQuery, [email]);
 
   if (existingUser.rows.length > 0) {
     return res.status(400).json({ message: "User already registered" });
@@ -35,7 +36,7 @@ router.post("/", async (req, res) => {
   const insertUserQuery =
     "INSERT INTO users (name, email, password , company , role) VALUES ($1, $2, $3, $4 ,$5) RETURNING user_id, name, email";
   try {
-    const newUser = await pool.query(insertUserQuery, [
+    const newUser = await client.query(insertUserQuery, [
       name,
       email,
       hashedPassword,
@@ -60,6 +61,9 @@ router.post("/", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
+  } finally {
+    client.release();
+    disconnectDB();
   }
 });
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { pool } = require("../db/db");
+const { connectDB, disconnectDB } = require("../db/db");
 
 router.get("/:id", async (req, res) => {
   const projectId = parseInt(req.params.id, 10);
@@ -11,11 +11,11 @@ router.get("/:id", async (req, res) => {
       message: "Invalid project ID provided.",
     });
   }
-
+  const client = await connectDB();
   try {
-    const result = await pool.query(
-      "SELECT * FROM projects WHERE created = $1",
-      [projectId]
+    const result = await client.query(
+      "SELECT * FROM projects WHERE created = $1 order by start_date",
+      [projectId],
     );
 
     // If tasks are found, return them; otherwise, send a 404 not found
@@ -35,6 +35,9 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
+  } finally {
+    client.release();
+    disconnectDB();
   }
 });
 

@@ -1,4 +1,4 @@
-const { pool } = require("../db/db");
+const { pool, disconnectDB } = require("../db/db");
 
 // ✅ Update user activation status to true
 const verifyUserById = async (userId) => {
@@ -22,6 +22,7 @@ const verifyUserById = async (userId) => {
     return { message: err.message, status: 500, success: false };
   } finally {
     client.release();
+    disconnectDB();
   }
 };
 

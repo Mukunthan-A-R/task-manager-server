@@ -1,4 +1,4 @@
-const { pool } = require("../db/db");
+const { connectDB, disconnectDB } = require("../db/db");
 
 // This function only returns true or false — no res interaction
 async function hasProjectAccess(userId, projectId) {
@@ -10,13 +10,16 @@ async function hasProjectAccess(userId, projectId) {
     WHERE p.project_id = $1 AND (p.created = $2 OR upa.user_id IS NOT NULL)
     LIMIT 1;
   `;
-
+  const client = await connectDB();
   try {
-    const { rows } = await pool.query(accessQuery, [projectId, userId]);
+    const { rows } = await client.query(accessQuery, [projectId, userId]);
     return rows.length > 0;
   } catch (error) {
     console.error("Error checking project access:", error);
     return false; // optionally return false or throw if you prefer
+  } finally {
+    client.release();
+    disconnectDB();
   }
 }
 

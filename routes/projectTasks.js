@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { hasProjectAccess } = require("../models/projectAccess");
-const { pool } = require("../db/db");
+const { connectDB, disconnectDB } = require("../db/db");
 
 // Helper to send consistent response
 const sendResponse = (res, status, success, message, data = null) => {
@@ -14,6 +14,7 @@ const sendResponse = (res, status, success, message, data = null) => {
 };
 
 router.get("/:id", async (req, res) => {
+  const client = await connectDB();
   const projectId = parseInt(req.params.id);
   const userId = req.user.userId;
 
@@ -23,7 +24,7 @@ router.get("/:id", async (req, res) => {
       return sendResponse(res, 403, false, "Access denied");
     }
 
-    const result = await pool.query(
+    const result = await client.query(
       "SELECT t.*, u.name FROM tasks t LEFT JOIN users u ON u.user_id = t.created_by WHERE t.project_id = $1",
       [projectId],
     );
@@ -38,6 +39,9 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     sendResponse(res, 500, false, "Internal server error");
+  } finally {
+    client.release();
+    disconnectDB();
   }
 });
 

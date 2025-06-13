@@ -1,5 +1,5 @@
 const express = require("express");
-const { pool } = require("../db/db");
+const { connectDB, disconnectDB } = require("../db/db");
 const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const Joi = require("joi");
@@ -24,9 +24,11 @@ router.post("/login", async (req, res) => {
 
   const { email, password } = req.body;
 
+  const client = await connectDB();
+
   try {
     const checkUserQuery = "SELECT * FROM users WHERE email = $1";
-    const userResult = await pool.query(checkUserQuery, [email]);
+    const userResult = await client.query(checkUserQuery, [email]);
 
     if (userResult.rows.length === 0) {
       return res.status(400).json({ message: "Invalid email or password" });
@@ -45,7 +47,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user.user_id, email: user.email },
       JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "24h" },
     );
 
     res.status(200).json({
@@ -56,6 +58,9 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
+  } finally {
+    client.release();
+    disconnectDB();
   }
 });
 
@@ -73,26 +78,25 @@ router.get("/user/activate/:id", async (req, res) => {
 
     res.send(
       `
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Account Activation</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 40px; text-align: center; }
-    .container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
-    h1 { color: #2e7d32; }
-    a { display: inline-block; background: #0052cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Account Activated!</h1>
-    <p>Hi <span id="user-name"></span>, your account is now active.</p>
-    <p>You can close this window !</p>
-  </div>
-</body>
-
-      `
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Account Activation</title>
+        <style>
+          body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 40px; text-align: center; }
+          .container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+          h1 { color: #2e7d32; }
+          a { display: inline-block; background: #0052cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Account Activated!</h1>
+          <p>Hi <span id="user-name"></span>, your account is now active.</p>
+          <p>You can close this window !</p>
+        </div>
+      </body>
+      `,
     );
     // .json(user);
   } catch (error) {

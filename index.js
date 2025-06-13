@@ -27,7 +27,7 @@ app.options("*", cors(corsOptions));
 app.use(express.json());
 
 // ✅ DB connection
-connectDB();
+// connectDB();
 
 // ✅ Middleware and Routes
 const task = require("./routes/tasks");
