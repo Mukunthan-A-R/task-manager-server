@@ -8,6 +8,7 @@ const pool = new Pool({
   port: process.env.DB_PORT,
   ssl: {
     require: true,
+    rejectUnauthorized: false,
   },
 });
 
@@ -16,15 +17,16 @@ const errorHandler = (error) => {
   console.error(error);
 };
 
+pool.on("error", errorHandler);
+
 const connectDB = async () => {
   try {
     const client = await pool.connect(); // Get a client from the pool
-    pool.on("error", errorHandler);
     console.log("Connected to PostgreSQL");
     return client;
   } catch (err) {
     console.error("Connection error", err.stack);
-    throw err;
+    pool.off("error", errorHandler);
   }
 };
 
@@ -39,6 +41,7 @@ const disconnectDB = async () => {
 };
 
 // Export the pool, connect, and disconnect functions
+
 module.exports = {
   pool,
   connectDB,
