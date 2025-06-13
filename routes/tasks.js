@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
   const { error } = validateTask(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const data = await createTask(req.body);
+  const data = await createTask({ ...req.body, user: req.user });
   res.status(data.status).send(data);
 });
 
@@ -36,7 +36,7 @@ router.put("/:id", async (req, res) => {
   const { error } = validateTask(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const data = await updateTask(req.params.id, req.body);
+  const data = await updateTask(req.params.id, { ...req.body, user: req.user });
   res.status(data.status).send(data);
 });
 
@@ -57,7 +57,6 @@ const taskSchema = Joi.object({
   time_duration: Joi.number().min(1).max(10000).optional(),
   start_date: Joi.date().required(),
   end_date: Joi.date().required(),
-  user_id: Joi.number().required().min(1),
 });
 
 // Function to validate the task data using Joi

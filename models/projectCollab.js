@@ -1,5 +1,5 @@
 // models/projectCollab.js
-const { pool } = require("../db/db"); // Assuming pool is set up for DB connection
+const { connectDB } = require("../db/db"); // Assuming pool is set up for DB connection
 
 // Utility function to handle errors
 const handleError = (err) => {
@@ -12,7 +12,7 @@ const handleError = (err) => {
 
 // Get all assignments
 const getAllAssignments = async () => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "SELECT * FROM user_project_assignments"; // Assuming this is the correct table
   try {
     const res = await client.query(text);
@@ -26,7 +26,7 @@ const getAllAssignments = async () => {
 
 // Get an assignment by ID
 const getAssignmentById = async (id) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "SELECT * FROM user_project_assignments WHERE project_id = $1";
   try {
     const res = await client.query(text, [parseInt(id)]);
@@ -47,7 +47,7 @@ const getAssignmentById = async (id) => {
 
 // Create a new assignment
 const createAssignment = async (data) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = `
     INSERT INTO user_project_assignments (user_id, project_id, role, status)
     VALUES ($1, $2, $3, $4) RETURNING *;
@@ -71,7 +71,7 @@ const createAssignment = async (data) => {
 
 // Update an assignment
 const updateAssignment = async (id, data) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = `
     UPDATE user_project_assignments
     SET role = $1, status = $2
@@ -98,7 +98,7 @@ const updateAssignment = async (id, data) => {
 
 // Delete an assignment
 const deleteAssignment = async (id) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text =
     "DELETE FROM user_project_assignments WHERE assignment_id = $1 RETURNING *";
 

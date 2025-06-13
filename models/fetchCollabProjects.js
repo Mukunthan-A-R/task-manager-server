@@ -1,5 +1,5 @@
 // models/fetchCollabProjects.js
-const { pool } = require("../db/db");
+const { connectDB } = require("../db/db");
 
 const handleError = (err) => ({
   success: false,
@@ -8,7 +8,7 @@ const handleError = (err) => ({
 });
 
 const getProjectsByUser = async (userId) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const query = `
 SELECT 
   p.project_id,

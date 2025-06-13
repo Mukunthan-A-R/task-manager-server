@@ -1,7 +1,7 @@
-const { pool } = require("../db/db");
+const { connectDB } = require("../db/db");
 
 async function getActivityLogsByProject(projectId) {
-  const client = await pool.connect();
+  const client = await connectDB();
   try {
     const query = `
       SELECT log_id, user_id, project_id, task_id, action, description, timestamp
@@ -26,7 +26,7 @@ async function createActivityLog({
   action,
   description,
 }) {
-  const client = await pool.connect();
+  const client = await connectDB();
 
   if (!user_id || !project_id || !action || !description) {
     return { success: false, error: "Missing required fields" };

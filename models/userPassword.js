@@ -1,9 +1,9 @@
-const { pool } = require("../db/db");
+const { connectDB } = require("../db/db");
 const bcrypt = require("bcryptjs");
 
 // Change user password after verifying current password
 async function changePassword(id, currentPassword, newPassword) {
-  const client = await pool.connect();
+  const client = await connectDB();
 
   try {
     // 1. Get current hashed password from DB

@@ -13,7 +13,6 @@ const getUserByEmail = async (email) => {
     throw error;
   } finally {
     client.release();
-    disconnectDB();
   }
 };
 
@@ -31,7 +30,6 @@ const upsertResetToken = async (userId, token, expiresAt) => {
     throw error;
   } finally {
     client.release();
-    disconnectDB();
   }
 };
 
@@ -48,7 +46,6 @@ const getValidToken = async (token) => {
     throw error;
   } finally {
     client.release();
-    disconnectDB();
   }
 };
 
@@ -64,7 +61,6 @@ const updateUserPassword = async (userId, hashedPassword) => {
     throw error;
   } finally {
     client.release();
-    disconnectDB();
   }
 };
 
@@ -79,7 +75,6 @@ const deleteResetToken = async (userId) => {
     throw error;
   } finally {
     client.release();
-    disconnectDB();
   }
 };
 

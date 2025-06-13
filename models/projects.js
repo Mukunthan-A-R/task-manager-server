@@ -1,5 +1,5 @@
 // model/projects.js
-const { pool } = require("../db/db"); // Assuming pool is set up for DB connection
+const { connectDB } = require("../db/db"); // Assuming pool is set up for DB connection
 
 // Utility function to handle errors
 const handleError = (err) => {
@@ -12,7 +12,7 @@ const handleError = (err) => {
 
 // Get all projects
 const getAllProjects = async () => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "SELECT * FROM projects"; // Assuming 'projects' is the table name
   try {
     const res = await client.query(text);
@@ -26,7 +26,7 @@ const getAllProjects = async () => {
 
 // Get a project by ID
 const getProject = async (id) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "SELECT * FROM projects WHERE project_id = $1";
   try {
     const res = await client.query(text, [parseInt(id)]);
@@ -47,7 +47,7 @@ const getProject = async (id) => {
 
 // Create a new project
 const createProject = async (data) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = `
     INSERT INTO projects (name, description, start_date, end_date, status, priority, created)
     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
@@ -74,7 +74,7 @@ const createProject = async (data) => {
 
 // Update an existing project
 const updateProject = async (id, data) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = `
     UPDATE projects
     SET name = $1, description = $2, start_date = $3, end_date = $4, status = $5, priority = $6
@@ -109,7 +109,7 @@ const updateProject = async (id, data) => {
 
 // Delete a project by ID
 const deleteProject = async (id) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "DELETE FROM projects WHERE project_id = $1 RETURNING *";
 
   try {

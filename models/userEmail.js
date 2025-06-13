@@ -1,5 +1,5 @@
 // models/userEmail.js
-const { pool } = require("../db/db"); // Assuming pool is set up for DB connection
+const { connectDB } = require("../db/db"); // Assuming pool is set up for DB connection
 
 // Utility function to handle errors
 const handleError = (err) => {
@@ -12,7 +12,7 @@ const handleError = (err) => {
 
 // Get a user by email
 const getUserByEmail = async (email) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "SELECT * FROM users WHERE email = $1"; // Query to find user by email
 
   try {

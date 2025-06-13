@@ -1,5 +1,5 @@
 // model/tasks.js
-const { pool } = require("../db/db"); // Assuming pool is set up for DB connection
+const { connectDB } = require("../db/db"); // Assuming pool is set up for DB connection
 
 // Utility function to handle errors
 const handleError = (err) => {
@@ -12,7 +12,7 @@ const handleError = (err) => {
 
 // Get all tasks
 const getAllTasks = async () => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "SELECT * FROM tasks"; // Assuming 'tasks' is the table name
   try {
     const res = await client.query(text);
@@ -26,7 +26,7 @@ const getAllTasks = async () => {
 
 // Get a task by ID
 const getTask = async (id) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "SELECT * FROM tasks WHERE task_id = $1";
   try {
     const res = await client.query(text, [parseInt(id)]);
@@ -47,7 +47,7 @@ const getTask = async (id) => {
 
 // Create a new task
 const createTask = async (data) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = `
     INSERT INTO tasks (project_id, title, description, status, time_duration, start_date, end_date, created_date, created_by)
     VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE, $8) RETURNING *;
@@ -60,7 +60,7 @@ const createTask = async (data) => {
     data.time_duration,
     data.start_date,
     data.end_date,
-    data.user_id,
+    data.user.userId,
   ];
 
   try {
@@ -75,7 +75,7 @@ const createTask = async (data) => {
 
 // Update an existing task
 const updateTask = async (id, data) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = `
     UPDATE tasks
     SET project_id = $1, title = $2, description = $3, status = $4, time_duration = $5, start_date = $6, end_date = $7, created_by = $9
@@ -90,7 +90,7 @@ const updateTask = async (id, data) => {
     data.start_date,
     data.end_date,
     parseInt(id),
-    data.user_id,
+    data.user.userId,
   ];
 
   try {
@@ -112,7 +112,7 @@ const updateTask = async (id, data) => {
 
 // Delete a task by ID
 const deleteTask = async (id) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const text = "DELETE FROM tasks WHERE task_id = $1 RETURNING *";
 
   try {

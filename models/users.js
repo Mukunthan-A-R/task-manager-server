@@ -1,4 +1,4 @@
-const { pool } = require("../db/db");
+const { connectDB } = require("../db/db");
 
 // Utility: Handle DB errors
 const handleError = (err) => {
@@ -11,7 +11,7 @@ const handleError = (err) => {
 
 // ✅ Get all users
 const getAllUsers = async () => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const query = "SELECT user_id, name, email, company, role FROM users";
 
   try {
@@ -26,7 +26,7 @@ const getAllUsers = async () => {
 
 // ✅ Get one user by ID
 const getUser = async (id) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const query =
     "SELECT user_id, name, email, company, role FROM users WHERE user_id = $1";
 
@@ -49,7 +49,7 @@ const getUser = async (id) => {
 
 // ✅ Create new user
 const createUser = async (data) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const query = `
     INSERT INTO users (name, email, password, company)
     VALUES ($1, $2, $3, $4)
@@ -77,7 +77,7 @@ const createUser = async (data) => {
 // ✅ Update user
 // ✅ Update user
 const updateUser = async (id, data) => {
-  const client = await pool.connect();
+  const client = await connectDB();
 
   // ✅ Basic input validation
   if (!id || !data?.name || !data?.role || !data?.company) {
@@ -128,7 +128,7 @@ const updateUser = async (id, data) => {
 
 // ✅ Delete user
 const deleteUser = async (id) => {
-  const client = await pool.connect();
+  const client = await connectDB();
   const query = "DELETE FROM users WHERE user_id = $1 RETURNING *";
 
   try {

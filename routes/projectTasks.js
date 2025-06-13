@@ -41,7 +41,6 @@ router.get("/:id", async (req, res) => {
     sendResponse(res, 500, false, "Internal server error");
   } finally {
     client.release();
-    disconnectDB();
   }
 });
 

@@ -19,7 +19,6 @@ async function hasProjectAccess(userId, projectId) {
     return false; // optionally return false or throw if you prefer
   } finally {
     client.release();
-    disconnectDB();
   }
 }
 
