@@ -60,3 +60,14 @@ CREATE TABLE project_activity_logs (
 
 
 
+-- Create the table "password_resets"
+CREATE TABLE password_resets (
+    reset_id INT PRIMARY KEY,
+    token VARCHAR(128) NOT NULL,
+    user_id INT NOT NULL,
+    expires_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
+
+
