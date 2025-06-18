@@ -120,12 +120,12 @@ router.get("/profile", (req, res) => {
 });
 
 router.get("/auth/me", async (req, res) => {
+  const client = await connectDB();
   try {
     const cookies = req.cookies;
     const token = cookies["doneit-session"];
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    const client = await connectDB();
     const checkUserQuery = "SELECT * FROM users WHERE user_id = $1";
     const userResult = await client.query(checkUserQuery, [decoded.userId]);
 
@@ -142,6 +142,7 @@ router.get("/auth/me", async (req, res) => {
     });
   } catch (err) {
     console.log("🚀 ~ router.get ~ err:", err);
+    client.release();
     return res
       .cookie("doneit-session", "", {
         expires: 0,
