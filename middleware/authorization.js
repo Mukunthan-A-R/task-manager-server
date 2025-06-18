@@ -41,12 +41,10 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user.user_id, email: user.email },
       JWT_SECRET,
-      { expiresIn: "24h" },
+      { expiresIn: "1d" },
     );
 
-    const cookieExpiryTime = new Date(
-      new Date().getTime() + 6 * 60 * 60 * 1000,
-    );
+    const cookieExpiryTime = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     res
       .cookie("doneit-session", token, {
@@ -142,7 +140,6 @@ router.get("/auth/me", async (req, res) => {
     });
   } catch (err) {
     console.log("🚀 ~ router.get ~ err:", err);
-    client.release();
     return res
       .cookie("doneit-session", "", {
         expires: 0,
@@ -152,18 +149,13 @@ router.get("/auth/me", async (req, res) => {
       })
       .status(401)
       .json({ message: "Auth token Expired" }); // <-- must return here too
+  } finally {
+    client.release();
   }
 });
 
 router.get("/auth/logout", (req, res) => {
-  res
-    .cookie("doneit-session", "", {
-      expires: 0,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    })
-    .json({ message: "Logout successful" });
+  res.clearCookie("doneit-session").json({ message: "Logout successful" });
 });
 
 module.exports = router;
