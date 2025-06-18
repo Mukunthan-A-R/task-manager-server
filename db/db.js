@@ -19,7 +19,6 @@ const connectDB = async () => {
     return client;
   } catch (err) {
     console.error("Connection error", err.stack);
-    pool.off("error", errorHandler);
   }
 };
 
@@ -29,7 +28,6 @@ const disconnectDB = async () => {
     console.log("Disconnected from PostgreSQL");
   } catch (err) {
     console.error("Disconnection error", err.stack);
-    pool.off("error", errorHandler);
   }
 };
 

@@ -1,4 +1,4 @@
-const { pool, disconnectDB } = require("../db/db");
+const { connectDB } = require("../db/db");
 
 // ✅ Update user activation status to true
 const verifyUserById = async (userId) => {

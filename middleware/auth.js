@@ -1,17 +1,12 @@
 const express = require("express");
-const { connectDB, disconnectDB } = require("../db/db");
+const { connectDB } = require("../db/db");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
-const bodyParser = require("body-parser");
 const confirmEmail = require("../utils/confirmEmail");
 
 const router = express();
 // Middleware to parse JSON
-router.use(bodyParser.json());
-
-// router.get("/", (req, res) => {
-//   res.send("vanakkam");
-// });
+router.use(express.json());
 
 // Register Endpoint
 router.post("/", async (req, res) => {

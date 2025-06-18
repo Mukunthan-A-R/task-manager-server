@@ -1,22 +1,16 @@
 const express = require("express");
-const { connectDB, disconnectDB } = require("../db/db");
+const { connectDB } = require("../db/db");
 const bcrypt = require("bcryptjs");
-const bodyParser = require("body-parser");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const { verifyUserById } = require("../models/userVerify");
 
-const router = express();
+const router = express.Router();
 
-// Middleware to parse JSON
-router.use(bodyParser.json());
-
-// Secret key for JWT (should be stored in an environment variable)
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Login Endpoint
 router.post("/login", async (req, res) => {
-  // Validate login request body
   const { error } = loginSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -50,11 +44,22 @@ router.post("/login", async (req, res) => {
       { expiresIn: "24h" },
     );
 
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      user: userData, // contains all fields except password
-    });
+    const cookieExpiryTime = new Date(
+      new Date().getTime() + 6 * 60 * 60 * 1000,
+    );
+
+    res
+      .cookie("doneit-session", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        expires: cookieExpiryTime,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      })
+      .json({
+        message: "Login successful",
+        token,
+        user: userData, // contains all fields except password
+      });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
@@ -112,6 +117,52 @@ router.get("/profile", (req, res) => {
   res
     .status(200)
     .json({ message: "Profile accessed", user: { userId, email } });
+});
+
+router.get("/auth/me", async (req, res) => {
+  try {
+    const cookies = req.cookies;
+    const token = cookies["doneit-session"];
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    const client = await connectDB();
+    const checkUserQuery = "SELECT * FROM users WHERE user_id = $1";
+    const userResult = await client.query(checkUserQuery, [decoded.userId]);
+
+    if (userResult.rows.length === 0) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    const user = userResult.rows[0];
+    const { password: _, ...userData } = user;
+
+    res.send({
+      message: "Authentication succesful!",
+      token,
+      user: userData,
+    });
+  } catch (err) {
+    console.log("🚀 ~ router.get ~ err:", err);
+    return res
+      .cookie("doneit-session", "", {
+        expires: 0,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      })
+      .status(401)
+      .json({ message: "Auth token Expired" }); // <-- must return here too
+  }
+});
+
+router.get("/auth/logout", (req, res) => {
+  res
+    .cookie("doneit-session", "", {
+      expires: 0,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    })
+    .json({ message: "Logout successful" });
 });
 
 module.exports = router;

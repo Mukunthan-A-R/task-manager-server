@@ -5,24 +5,22 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 function authMiddleware(req, res, next) {
-  const authHeader = req.headers["authorization"];
+  const cookies = req.cookies;
+  const token = cookies["doneit-session"];
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!token) {
     return res.status(401).json({ message: "Invalid auth token" }); // <-- must return here
   }
-
-  const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
-    next(); // proceed if verified
+    next();
   } catch (err) {
     return res
       .status(401)
       .json({ message: "Auth token Expired", reset: "true" }); // <-- must return here too
   }
-  //   return res.status(200).json({ message: "You are allowed" });
 }
 
 module.exports = authMiddleware;

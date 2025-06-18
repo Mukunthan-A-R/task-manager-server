@@ -1,10 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { connectDB } = require("./db/db");
 const authMiddleware = require("./middleware/authMiddleware");
+const cookieParser = require("cookie-parser");
 
 const app = express();
+
+// ✅ Body parser
+app.use(express.json());
+
+app.use(cookieParser());
 
 // ✅ CORS configuration to allow all origins
 const corsOptions = {
@@ -13,21 +18,15 @@ const corsOptions = {
     "http://localhost:5186",
     "https://doneitapp.netlify.app",
   ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  // allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 };
 
 // ✅ Apply CORS middleware globally
 app.use(cors(corsOptions));
 
-// ✅ Handle preflight (OPTIONS) requests for all routes
 app.options("*", cors(corsOptions));
-
-// ✅ Body parser
-app.use(express.json());
-
-// ✅ DB connection
-// connectDB();
 
 // ✅ Middleware and Routes
 const task = require("./routes/tasks");
