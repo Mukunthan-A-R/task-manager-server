@@ -31,7 +31,8 @@ CREATE TABLE tasks (
     time_duration INT,                         -- Time duration of the task in hours or minutes
     start_date DATE,                           -- Start date of the task
     end_date DATE,                             -- End date of the task
-    created_date DATE DEFAULT CURRENT_DATE     -- Date when the task was created (defaults to current date)
+    created_date DATE DEFAULT CURRENT_DATE,    -- Date when the task was created (defaults to current date)
+	created_by INT                             -- To Track Created User
 );
 
 -- Create the table "user_project_assignments "
@@ -64,4 +65,14 @@ CREATE TABLE password_resets (
     user_id INT NOT NULL,
     expires_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
+
+-- Create the table "contact_messages"
+CREATE TABLE contact_messages (
+  message_id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL CHECK (char_length(name) BETWEEN 3 AND 30),
+  email VARCHAR(150) NOT NULL,
+  message TEXT NOT NULL CHECK (char_length(message) BETWEEN 10 AND 600),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
