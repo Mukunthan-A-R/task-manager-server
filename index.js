@@ -43,12 +43,14 @@ const userEmailRoute = require("./routes/userEmail");
 const passwordReset = require("./routes/passwordReset.js");
 const userPasswordRoute = require("./routes/userPassword");
 const projectActivityRoutes = require("./routes/projectActivity");
+const usercontact = require("./routes/contact");
 const { loggerMiddleware } = require("./middleware/logger.js");
 
 // ✅ Route mounts
 app.use("/", authorization);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
+app.use("/api/contact", usercontact);
 app.use(authMiddleware);
 app.use(loggerMiddleware);
 
