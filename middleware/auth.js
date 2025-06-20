@@ -3,6 +3,7 @@ const { connectDB } = require("../db/db");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const confirmEmail = require("../utils/confirmEmail");
+const { createSubscription } = require("../models/subscription");
 
 const router = express();
 // Middleware to parse JSON
@@ -38,6 +39,14 @@ router.post("/", async (req, res) => {
       company,
       role,
     ]);
+
+    const user = newUser.rows[0];
+
+    // Create free trial subscription
+    const trialResponse = await createSubscription(user.user_id);
+    if (!trialResponse.success) {
+      return res.status(500).json({ message: trialResponse.message });
+    }
 
     if (newUser) {
       const doneItServer = process.env.DONE_IT_SERVER;
