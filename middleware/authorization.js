@@ -155,7 +155,14 @@ router.get("/auth/me", async (req, res) => {
 });
 
 router.get("/auth/logout", (req, res) => {
-  res.clearCookie("doneit-session").json({ message: "Logout successful" });
+  res
+    .cookie("doneit-session", "", {
+      expires: 0,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    })
+    .json({ message: "Logout successful" });
 });
 
 module.exports = router;
