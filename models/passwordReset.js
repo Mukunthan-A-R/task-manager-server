@@ -1,4 +1,4 @@
-const { connectDB, disconnectDB } = require("../db/db");
+const { connectDB } = require("../db/db");
 
 // Get user by email
 const getUserByEmail = async (email) => {
