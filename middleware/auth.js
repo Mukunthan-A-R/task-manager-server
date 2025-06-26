@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
 
     if (newUser) {
       const doneItServer = process.env.DONE_IT_SERVER;
-      const activationLink = `${doneItServer}/user/activate/${newUser.rows[0].user_id}`;
+      const activationLink = `${doneItServer}/api/user/activate/${newUser.rows[0].user_id}`;
 
       await confirmEmail(email, name, activationLink);
       // console.log(process.env.EMAIL_USER, process.env.EMAIL_APP_PASSWORD);

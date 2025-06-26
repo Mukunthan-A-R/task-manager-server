@@ -48,7 +48,7 @@ const subscriptionRoutes = require("./routes/subscription");
 const { loggerMiddleware } = require("./middleware/logger.js");
 
 // ✅ Route mounts
-app.use("/", authentication);
+app.use("/api", authentication);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
 app.use("/api/contact", usercontact);
