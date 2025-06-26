@@ -36,7 +36,7 @@ const user = require("./routes/users");
 const project = require("./routes/projects");
 const userTasksRoute = require("./routes/userTasks");
 const auth = require("./middleware/auth");
-const authorization = require("./middleware/authorization");
+const authentication = require("./middleware/authentication");
 const projectCollabRoutes = require("./routes/projectCollab");
 const fetchCollabProjects = require("./routes/fetchCollabProjects");
 const userEmailRoute = require("./routes/userEmail");
@@ -48,7 +48,7 @@ const subscriptionRoutes = require("./routes/subscription");
 const { loggerMiddleware } = require("./middleware/logger.js");
 
 // ✅ Route mounts
-app.use("/", authorization);
+app.use("/", authentication);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
 app.use("/api/contact", usercontact);

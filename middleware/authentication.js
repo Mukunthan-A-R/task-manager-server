@@ -41,7 +41,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user.user_id, email: user.email },
       JWT_SECRET,
-      { expiresIn: "1d" },
+      { expiresIn: "1d" }
     );
 
     const cookieExpiryTime = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -98,7 +98,7 @@ router.get("/user/activate/:id", async (req, res) => {
           <p>You can close this window !</p>
         </div>
       </body>
-      `,
+      `
     );
     // .json(user);
   } catch (error) {
