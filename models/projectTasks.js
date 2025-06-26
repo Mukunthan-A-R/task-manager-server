@@ -1,21 +1,20 @@
 const { connectDB } = require("../db/db");
 const { hasProjectAccess } = require("./projectAccess");
 
-const buildResponse = (status, success, message, data = null) => ({
-  status,
-  success,
-  message,
-  data,
-});
-
-// Fetch tasks under a project if user has access
 const fetchTasksByProjectId = async (userId, projectId) => {
   const client = await connectDB();
+
+  const sendResponse = (status, success, message, data = null) => ({
+    status,
+    success,
+    message,
+    data,
+  });
 
   try {
     const accessGranted = await hasProjectAccess(userId, projectId);
     if (!accessGranted) {
-      return buildResponse(403, false, "Access denied");
+      return sendResponse(403, false, "Access denied");
     }
 
     const query = `
@@ -28,18 +27,13 @@ const fetchTasksByProjectId = async (userId, projectId) => {
     const result = await client.query(query, [projectId]);
 
     if (result.rows.length > 0) {
-      return buildResponse(
-        200,
-        true,
-        "Tasks fetched successfully",
-        result.rows
-      );
+      return sendResponse(200, true, "Tasks fetched successfully", result.rows);
     }
 
-    return buildResponse(200, true, "Create your first Task!", result.rows);
+    return sendResponse(200, true, "Create your first Task!", result.rows);
   } catch (err) {
     console.error("fetchTasksByProjectId error:", err);
-    return buildResponse(500, false, "Internal server error");
+    return sendResponse(500, false, "Internal server error");
   } finally {
     client.release();
   }
