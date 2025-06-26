@@ -5,7 +5,7 @@ const Joi = require("joi");
 const confirmEmail = require("../utils/confirmEmail");
 const { createSubscription } = require("../models/subscription");
 
-const router = express();
+const router = express.Router();
 // Middleware to parse JSON
 router.use(express.json());
 
