@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const confirmEmail = require("../utils/confirmEmail");
 const { createSubscription } = require("../models/subscription");
+const { DatabaseError } = require("pg");
 
 const router = express.Router();
 // Middleware to parse JSON
@@ -17,13 +18,6 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const client = await connectDB();
-  // Check if the email is already registered
-  const checkEmailQuery = "SELECT * FROM users WHERE email = $1";
-  const existingUser = await client.query(checkEmailQuery, [email]);
-
-  if (existingUser.rows.length > 0) {
-    return res.status(400).json({ message: "User already registered" });
-  }
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -64,6 +58,11 @@ router.post("/", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+    if (err instanceof DatabaseError) {
+      if (err.constraint === "users_email_key") {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+    }
     res.status(500).json({ message: "Server error" });
   } finally {
     client.release();
