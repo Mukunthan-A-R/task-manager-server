@@ -3,6 +3,8 @@ const { connectDB } = require("../db/db");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 const { verifyUserById } = require("../models/userVerify");
 
 const router = express.Router();
@@ -41,7 +43,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user.user_id, email: user.email },
       JWT_SECRET,
-      { expiresIn: "1d" },
+      { expiresIn: "1d" }
     );
 
     const cookieExpiryTime = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -71,35 +73,18 @@ router.get("/user/activate/:id", async (req, res) => {
   const userId = req.params.id;
 
   try {
-    // Example: fetch user from a database (replace with real DB logic)
-    const user = await verifyUserById(userId); // Assume this is your DB call
-
+    const user = await verifyUserById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.send(
-      `
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Account Activation</title>
-        <style>
-          body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 40px; text-align: center; }
-          .container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
-          h1 { color: #2e7d32; }
-          a { display: inline-block; background: #0052cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <h1>Account Activated!</h1>
-          <p>Hi <span id="user-name"></span>, your account is now active.</p>
-          <p>You can close this window !</p>
-        </div>
-      </body>
-      `,
-    );
+    const templatePath = path.join(__dirname, "../views/activation.html");
+    let html = fs.readFileSync(templatePath, "utf8");
+
+    html = html.replace("{{APP_URL}}", process.env.DONE_IT_CLIENT || "#");
+
+    res.send(html);
+
     // .json(user);
   } catch (error) {
     console.error("Error fetching user:", error);
