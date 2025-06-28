@@ -78,7 +78,7 @@ const updateTask = async (id, data) => {
   const client = await connectDB();
   const text = `
     UPDATE tasks
-    SET project_id = $1, title = $2, description = $3, status = $4, time_duration = $5, start_date = $6, end_date = $7, created_by = $9
+    SET project_id = $1, title = $2, description = $3, status = $4, time_duration = $5, start_date = $6, end_date = $7
     WHERE task_id = $8 RETURNING *;
   `;
   const values = [
@@ -90,7 +90,6 @@ const updateTask = async (id, data) => {
     data.start_date,
     data.end_date,
     parseInt(id),
-    data.user.userId,
   ];
 
   try {
