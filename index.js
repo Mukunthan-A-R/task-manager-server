@@ -45,9 +45,11 @@ const userPasswordRoute = require("./routes/userPassword");
 const projectActivityRoutes = require("./routes/projectActivity");
 const usercontact = require("./routes/contact");
 const subscriptionRoutes = require("./routes/subscription");
+const aboutRoute = require("./routes/about");
 const { loggerMiddleware } = require("./middleware/logger.js");
 
 // ✅ Route mounts
+app.use("/", aboutRoute);
 app.use("/api", authentication);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
