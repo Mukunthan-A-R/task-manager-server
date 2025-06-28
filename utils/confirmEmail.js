@@ -14,35 +14,42 @@ const confirmEmail = async (email, name, activationLink) => {
     to: email,
     subject: `Sandy Soft Account Activation for user ${name}`,
     html: `
-  <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; color: #333;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 32px 24px; font-family: 'Segoe UI', Roboto, Arial, sans-serif; color: #333; background-color: #f9fafb; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
     
-    <div style="text-align: center; margin-bottom: 30px;">
-      <img src="https://i.ibb.co/xSXfq2gL/Sandy-Soft.png" alt="done it logo" style="height: 60px;" />
+    <div style="text-align: center; margin-bottom: 32px;">
+      <img src="https://i.ibb.co/xSXfq2gL/Sandy-Soft.png" alt="done it logo" style="height: 64px; object-fit: contain;" />
     </div>
 
-    <h2>Hello, ${name}</h2>
+    <h2 style="color: #1f2937; font-size: 22px;">Hi ${name},</h2>
 
-    <p>Welcome to a space where work moves with intention.</p>
-
-    <p>Your journey with <strong>done it</strong>, Sandy Soft’s work management platform, begins here. Before we unlock the full experience, please take a moment to verify your account.</p>
-
-    <p style="margin: 30px 0;">
-      <a href="${activationLink}" style="background-color: #0052cc; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
-        Activate My Account
-      </a>
+    <p style="font-size: 15px; line-height: 1.6; color: #4b5563;">
+      Welcome to a space where work moves with intention.
     </p>
 
-    <p>This small step opens the door to a more connected, thoughtful, and efficient way to manage what matters.</p>
+    <p style="font-size: 15px; line-height: 1.6; color: #4b5563;">
+      Your journey with <strong style="color: #111827;">done it</strong> — Sandy Soft’s minimalist work management platform — begins here. Before we unlock the full experience, please take a moment to verify your account.
+    </p>
 
-    <p>If this wasn’t initiated by you, no action is needed.</p>
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="${activationLink}" style="background-color: #0052cc; padding: 14px 26px; color: #fff; font-weight: 500; font-size: 15px; text-decoration: none; border-radius: 6px; display: inline-block;">
+        Activate My Account
+      </a>
+    </div>
 
-    <p>We’re glad you’re here. The possibilities start now.</p>
+    <p style="font-size: 15px; line-height: 1.6; color: #4b5563;">
+      This small step opens the door to a more connected, thoughtful, and efficient way to manage what matters most.
+    </p>
 
-    <p><strong>Warm regards,</strong></p>
-    <p><strong>The Sandy Soft Team</strong></p>
+    <p style="font-size: 15px; color: #4b5563;">If you didn’t request this, you can safely ignore this email.</p>
 
-    <hr style="margin-top: 40px;" />
-    <small style="color: #999;">If you received this message in error, you can safely disregard it.</small>
+    <p style="margin-top: 40px; font-size: 15px; color: #1f2937;"><strong>Warm regards,</strong><br/><strong>The Sandy Soft Team</strong></p>
+
+    <hr style="margin-top: 40px; border: none; border-top: 1px solid #e5e7eb;" />
+
+    <small style="display: block; text-align: center; margin-top: 16px; color: #9ca3af;">
+      This email was sent by Sandy Soft. If you received it in error, no further action is required.
+    </small>
+
   </div>
 `,
   });
