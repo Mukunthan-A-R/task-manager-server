@@ -32,6 +32,13 @@ router.post("/login", async (req, res) => {
 
     const user = userResult.rows[0];
 
+    // ✅ Check if user is activated
+    if (!user.is_activated) {
+      return res
+        .status(403)
+        .json({ message: "Account not activated. Please verify your email." });
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid email or password" });
@@ -58,7 +65,7 @@ router.post("/login", async (req, res) => {
       .json({
         message: "Login successful",
         token,
-        user: userData, // contains all fields except password
+        user: userData,
       });
   } catch (err) {
     console.error("Login error:", err);
