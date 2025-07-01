@@ -17,6 +17,8 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:5186",
     "https://doneitapp.netlify.app",
+    "https://doneitweb.netlify.app",
+    "https://doneit.online",
   ],
   // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   // allowedHeaders: ["Content-Type", "Authorization"],
