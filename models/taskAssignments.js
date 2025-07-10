@@ -10,58 +10,62 @@ const assignUserToTask = async ({ task_id, user_id, assigned_by }) => {
   const client = await connectDB();
 
   try {
-    const taskRes = await client.query(
+    // Step 1: Get the project_id of the task
+    const taskResult = await client.query(
       `SELECT project_id FROM tasks WHERE task_id = $1`,
       [task_id]
     );
 
-    if (taskRes.rowCount === 0) {
-      return { success: false, status: 404, message: "Task not found" };
-    }
-
-    const project_id = taskRes.rows[0].project_id;
-
-    const checkRes = await client.query(
-      `SELECT role FROM project_assignments WHERE project_id = $1 AND user_id = $2`,
-      [project_id, user_id]
-    );
-
-    if (checkRes.rowCount === 0) {
+    if (taskResult.rowCount === 0) {
       return {
         success: false,
-        status: 403,
-        message: "User is not a member of the project",
+        status: 404,
+        message: "Task not found",
       };
     }
 
-    const userRole = checkRes.rows[0].role;
-    if (userRole === "client") {
+    const project_id = taskResult.rows[0].project_id;
+
+    // Step 2: Check if the user is a member of the project (and not a client)
+    const memberCheck = await client.query(
+      `SELECT * FROM user_project_assignments 
+       WHERE user_id = $1 AND project_id = $2 AND role != 'client'`,
+      [user_id, project_id]
+    );
+
+    if (memberCheck.rowCount === 0) {
       return {
         success: false,
         status: 403,
-        message: "Clients cannot be assigned to tasks",
+        message: "User is not a valid project member (or is a client)",
       };
     }
 
-    const insertRes = await client.query(
-      `INSERT INTO task_assignments (task_id, user_id, assigned_by)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (task_id, user_id) DO NOTHING
-       RETURNING *`,
-      [task_id, user_id, assigned_by]
-    );
+    // Step 3: Insert into task_assignments if not already exists
+    const insertQuery = `
+      INSERT INTO task_assignments (task_id, user_id, assigned_by)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (task_id, user_id) DO NOTHING
+      RETURNING *;
+    `;
+
+    const result = await client.query(insertQuery, [
+      task_id,
+      user_id,
+      assigned_by,
+    ]);
 
     return {
       success: true,
       status: 201,
-      data: insertRes.rows[0] || {},
+      data: result.rows[0] || {},
       message:
-        insertRes.rowCount > 0
-          ? "Assignment created"
-          : "Assignment already exists",
+        result.rowCount > 0
+          ? "Assignment created successfully"
+          : "User is already assigned to this task",
     };
   } catch (err) {
-    return handleError(err);
+    return handleError(err); // Your global error handler
   } finally {
     client.release();
   }
