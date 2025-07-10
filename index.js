@@ -47,6 +47,7 @@ const userPasswordRoute = require("./routes/userPassword");
 const projectActivityRoutes = require("./routes/projectActivity");
 const usercontact = require("./routes/contact");
 const subscriptionRoutes = require("./routes/subscription");
+const taskAssignmentRoutes = require("./routes/taskAssignments");
 const aboutRoute = require("./routes/about");
 const { loggerMiddleware } = require("./middleware/logger.js");
 
@@ -64,6 +65,7 @@ app.use("/api/subscription", subscriptionRoutes);
 app.use("/project", userProjects);
 app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
+app.use("/api/task-assignments", taskAssignmentRoutes);
 app.use("/api/user", user);
 app.use("/api/usertasks", userTasksRoute);
 app.use("/api/userEmail", userEmailRoute);
