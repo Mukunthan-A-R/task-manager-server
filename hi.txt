@@ -104,3 +104,22 @@ CREATE TABLE public.user_subscriptions (
         REFERENCES public.users (user_id)
         ON DELETE CASCADE
 );
+
+
+
+-- Create the table "task_assignments"
+CREATE TABLE task_assignments (
+    assignment_id SERIAL PRIMARY KEY,
+    task_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    assigned_by UUID NOT NULL,
+    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- Foreign keys (assuming related tables exist)
+    CONSTRAINT fk_task FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_assigned_by FOREIGN KEY (assigned_by) REFERENCES users(user_id) ON DELETE SET NULL,
+
+    -- Unique constraint to prevent duplicate assignments
+    CONSTRAINT unique_task_user_assignment UNIQUE (task_id, user_id)
+);
