@@ -27,9 +27,17 @@ const assignUserToTask = async ({ task_id, user_id, assigned_by }) => {
     const project_id = taskResult.rows[0].project_id;
 
     // Step 2: Check if the user is a member of the project (and not a client)
+    // Step 2: Check if the user is a valid member or the project creator
     const memberCheck = await client.query(
-      `SELECT * FROM user_project_assignments 
-       WHERE user_id = $1 AND project_id = $2 AND role != 'client'`,
+      `
+  SELECT 1 FROM user_project_assignments 
+  WHERE user_id = $1 AND project_id = $2 AND role != 'client'
+  
+  UNION
+  
+  SELECT 1 FROM projects 
+  WHERE project_id = $2 AND created = $1
+  `,
       [user_id, project_id]
     );
 
