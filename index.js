@@ -45,6 +45,7 @@ const userEmailRoute = require("./routes/userEmail");
 const passwordReset = require("./routes/passwordReset.js");
 const userPasswordRoute = require("./routes/userPassword");
 const projectActivityRoutes = require("./routes/projectActivity");
+const taskAssignmentRoutes = require("./routes/taskAssignments");
 const usercontact = require("./routes/contact");
 const subscriptionRoutes = require("./routes/subscription");
 const taskAssignmentRoutes = require("./routes/taskAssignments");
