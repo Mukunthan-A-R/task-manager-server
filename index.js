@@ -56,12 +56,12 @@ app.use("/api", authentication);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
 app.use("/api/contact", usercontact);
-// app.use(authMiddleware);
-// app.use(loggerMiddleware);
+app.use(authMiddleware);
+app.use(loggerMiddleware);
 
 app.use("/api/project", project);
 app.use("/api/subscription", subscriptionRoutes);
-app.use("/api/chatbot", chatbotRoute);
+app.use("/api/ai-assistant", chatbotRoute);
 app.use("/project", userProjects);
 app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
