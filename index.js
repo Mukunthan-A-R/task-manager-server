@@ -48,6 +48,7 @@ const usercontact = require("./routes/contact");
 const subscriptionRoutes = require("./routes/subscription");
 const aboutRoute = require("./routes/about");
 const { loggerMiddleware } = require("./middleware/logger.js");
+const chatbotRoute = require("./chatbot/chatRoute.js");
 
 // ✅ Route mounts
 app.use("/", aboutRoute);
@@ -55,11 +56,12 @@ app.use("/api", authentication);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
 app.use("/api/contact", usercontact);
-app.use(authMiddleware);
-app.use(loggerMiddleware);
+// app.use(authMiddleware);
+// app.use(loggerMiddleware);
 
 app.use("/api/project", project);
 app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/chatbot", chatbotRoute);
 app.use("/project", userProjects);
 app.use("/api/task", task);
 app.use("/api/tasks", projectTasks);
