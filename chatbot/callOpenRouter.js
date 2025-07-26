@@ -1,7 +1,7 @@
 const quickPrompt = require("./prompts/quickPrompt");
 const deepThinkPrompt = require("./prompts/deepThinkPrompt");
 
-async function callOpenRouter({ mode, userMessage }) {
+async function callOpenRouter({ mode, prompt: userMessage }) {
   const prompt = mode === "deep" ? deepThinkPrompt : quickPrompt;
 
   const model = "deepseek/deepseek-chat";
