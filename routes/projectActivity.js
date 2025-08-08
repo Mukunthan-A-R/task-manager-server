@@ -6,10 +6,22 @@ const {
   createActivityLog,
 } = require("../models/projectActivity");
 const { getUser } = require("../models/users"); // your user model
+const { hasProjectAccess } = require("../models/projectAccess");
 
 // GET all activity logs for a project
 router.get("/:projectId", async (req, res) => {
   const { projectId } = req.params;
+
+  const sendResponse = (status, success, message, data = null) => ({
+    status,
+    success,
+    message,
+    data,
+  });
+  const accessGranted = await hasProjectAccess(req.user.userId, projectId);
+  if (!accessGranted) {
+    return sendResponse(403, false, "Access denied");
+  }
 
   const result = await getActivityLogsByProject(projectId);
 
