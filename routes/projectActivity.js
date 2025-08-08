@@ -18,9 +18,10 @@ router.get("/:projectId", async (req, res) => {
     message,
     data,
   });
+
   const accessGranted = await hasProjectAccess(req.user.userId, projectId);
   if (!accessGranted) {
-    return sendResponse(403, false, "Access denied");
+    return res.status(403).json(sendResponse(403, false, "Access denied"));
   }
 
   const result = await getActivityLogsByProject(projectId);
