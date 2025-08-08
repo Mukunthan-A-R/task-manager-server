@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
+const { hasProjectAccess } = require("../models/projectAccess");
 const {
   getAllProjects,
   getProject,
@@ -9,6 +10,13 @@ const {
   updateProject,
   deleteProject,
 } = require("../models/projects"); // Importing the model functions
+
+const sendResponse = (status, success, message, data = null) => ({
+  status,
+  success,
+  message,
+  data,
+});
 
 // Get all projects
 router.get("/", async (req, res) => {
@@ -18,6 +26,11 @@ router.get("/", async (req, res) => {
 
 // Get a project by ID
 router.get("/:id", async (req, res) => {
+  const accessGranted = await hasProjectAccess(req.user.userId, req.params.id);
+  if (!accessGranted) {
+    return sendResponse(403, false, "Access denied");
+  }
+
   const data = await getProject(req.params.id);
   res.status(data.status).send(data);
 });
