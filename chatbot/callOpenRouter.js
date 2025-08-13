@@ -1,15 +1,31 @@
 const quickPrompt = require("./prompts/quickPrompt");
 const deepThinkPrompt = require("./prompts/deepThinkPrompt");
+const { generateProjectPrompt } = require("./prompts/projectAssistant");
 
-async function callOpenRouter({ mode, prompt: userMessage }) {
-  const prompt = mode === "deep" ? deepThinkPrompt : quickPrompt;
+async function callOpenRouter({ mode, prompt: userMessage }, projectId) {
+  let systemPrompt;
+
+  if (mode === "deep") {
+    systemPrompt = deepThinkPrompt;
+  } else if (mode === "project") {
+    if (!projectId) {
+      return {
+        success: false,
+        message: "Project ID is required for project mode.",
+      };
+    }
+    const projectContext = await generateProjectPrompt(projectId);
+    systemPrompt = `${projectContext}\n\nUser Query: ${userMessage}`;
+  } else {
+    systemPrompt = quickPrompt;
+  }
 
   const model = "deepseek/deepseek-chat";
 
   const payload = {
     model,
     messages: [
-      { role: "system", content: prompt },
+      { role: "system", content: systemPrompt },
       { role: "user", content: userMessage },
     ],
   };
