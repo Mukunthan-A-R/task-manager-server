@@ -5,8 +5,11 @@ const callOpenRouter = require("./callOpenRouter");
 router.post("/:id", async (req, res) => {
   try {
     // console.log(req.body);
+    console.log(req.user.userId);
 
-    const result = await callOpenRouter(req.body, req.params.id);
+    const userId = req.user.userId;
+
+    const result = await callOpenRouter(req.body, req.params.id, userId);
     res.status(200).json(result);
   } catch (err) {
     console.error("LLM Error:", err);

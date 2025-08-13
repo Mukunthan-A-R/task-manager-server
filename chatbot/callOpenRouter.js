@@ -2,7 +2,11 @@ const quickPrompt = require("./prompts/quickPrompt");
 const deepThinkPrompt = require("./prompts/deepThinkPrompt");
 const { generateProjectPrompt } = require("./prompts/projectAssistant");
 
-async function callOpenRouter({ mode, prompt: userMessage }, projectId) {
+async function callOpenRouter(
+  { mode, prompt: userMessage },
+  projectId,
+  userId
+) {
   let systemPrompt;
 
   if (mode === "deep") {
@@ -14,7 +18,7 @@ async function callOpenRouter({ mode, prompt: userMessage }, projectId) {
         message: "Project ID is required for project mode.",
       };
     }
-    const projectContext = await generateProjectPrompt(projectId);
+    const projectContext = await generateProjectPrompt(userId, projectId);
     systemPrompt = `${projectContext}\n\nUser Query: ${userMessage}`;
   } else {
     systemPrompt = quickPrompt;

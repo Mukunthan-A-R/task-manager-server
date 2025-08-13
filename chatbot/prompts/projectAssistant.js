@@ -7,17 +7,23 @@ const { fetchTasksByProjectId } = require("../../models/projectTasks");
  * @param {string} projectId - The ID of the project to fetch data for.
  * @returns {Promise<string>} - A formatted prompt string.
  */
-async function generateProjectPrompt(projectId) {
+async function generateProjectPrompt(userId, projectId) {
   try {
     // Fetch project details
-    const project = await getProject(projectId);
+    const { data: project } = await getProject(projectId);
+
+    console.log("project ");
+    console.log(project);
 
     // Fetch tasks for this project
-    const tasks = await fetchTasksByProjectId(projectId);
+    const { data: tasks } = await fetchTasksByProjectId(userId, projectId);
+
+    console.log("tasks");
+    console.log(tasks);
 
     // Structure project details
     const projectInfo = `
-Project Title: ${project.title}
+Project Title: ${project.name}
 Description: ${project.description || "No description provided"}
 Status: ${project.status}
 Start Date: ${project.start_date}
@@ -33,8 +39,8 @@ End Date: ${project.end_date || "Ongoing"}
 ${index + 1}. ${task.title}
    - Status: ${task.status}
    - Description: ${task.description || "No description"}
-   - Assigned To: ${task.assigned_to?.name || "Unassigned"}
-   - Due Date: ${task.due_date || "Not set"}
+   - Assigned To: ${task.name || "Unassigned"}
+   - Due Date: ${task.end_date || "Not set"}
 `
         )
         .join("\n");
