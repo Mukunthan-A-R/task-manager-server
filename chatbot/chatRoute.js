@@ -5,7 +5,7 @@ const callOpenRouter = require("./callOpenRouter");
 router.post("/:id", async (req, res) => {
   try {
     // console.log(req.body);
-    console.log(req.user.userId);
+    // console.log(req.user.userId);
 
     const userId = req.user.userId;
 
