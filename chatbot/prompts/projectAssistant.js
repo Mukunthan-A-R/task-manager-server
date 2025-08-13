@@ -12,14 +12,14 @@ async function generateProjectPrompt(userId, projectId) {
     // Fetch project details
     const { data: project } = await getProject(projectId);
 
-    console.log("project ");
-    console.log(project);
+    // console.log("project ");
+    // console.log(project);
 
     // Fetch tasks for this project
     const { data: tasks } = await fetchTasksByProjectId(userId, projectId);
 
-    console.log("tasks");
-    console.log(tasks);
+    // console.log("tasks");
+    // console.log(tasks);
 
     // Structure project details
     const projectInfo = `
@@ -39,8 +39,11 @@ End Date: ${project.end_date || "Ongoing"}
 ${index + 1}. ${task.title}
    - Status: ${task.status}
    - Description: ${task.description || "No description"}
-   - Assigned To: ${task.name || "Unassigned"}
-   - Due Date: ${task.end_date || "Not set"}
+   - Created By: ${task.name || "Unassigned"}
+   - Task Start Date: ${task.start_date || "Not set"}
+   - Task End Date: ${task.end_date || "Not set"}
+   - Task Created Date: ${task.created_date || "Not Defined"}
+   - Task Time Duration: ${task.time_duration || "Not Defined"}
 `
         )
         .join("\n");
