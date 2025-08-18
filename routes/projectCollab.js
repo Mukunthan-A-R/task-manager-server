@@ -10,6 +10,7 @@ const {
   updateAssignment,
   deleteAssignment,
 } = require("../models/projectCollab");
+const addUserEmail = require("../utils/addUserEmail");
 
 // ✅ GET all assignments
 router.get("/", async (req, res) => {
@@ -32,6 +33,13 @@ router.post("/", async (req, res) => {
       .send({ success: false, message: error.details[0].message });
 
   const data = await createAssignment(req.body);
+
+  addUserEmail(
+    req.body.addedUserEmail,
+    req.body.addedUserName,
+    req.body.projectName
+  );
+
   res.status(data.status).send(data);
 });
 
@@ -59,6 +67,9 @@ const assignmentSchema = Joi.object({
   project_id: Joi.number().required(),
   role: Joi.string().valid("admin", "manager", "member", "client").required(),
   status: Joi.string().valid("pending", "accepted", "rejected").optional(),
+  addedUserEmail: Joi.string().email().optional(),
+  addedUserName: Joi.string().optional(),
+  projectName: Joi.string().optional(),
 });
 
 const updateSchema = Joi.object({

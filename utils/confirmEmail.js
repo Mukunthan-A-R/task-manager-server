@@ -17,7 +17,7 @@ const confirmEmail = async (email, name, activationLink) => {
   <div style="max-width: 600px; margin: 0 auto; padding: 32px 24px; font-family: 'Segoe UI', Roboto, Arial, sans-serif; color: #333; background-color: #f9fafb; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
     
     <div style="text-align: center; margin-bottom: 32px;">
-      <img src="https://i.ibb.co/xSXfq2gL/Sandy-Soft.png" alt="done it logo" style="height: 64px; object-fit: contain;" />
+      <img src="https://i.postimg.cc/tJnY2cMs/Sandy-Soft.png" alt="done it logo" style="height: 64px; object-fit: contain;" />
     </div>
 
     <h2 style="color: #1f2937; font-size: 22px;">Hi ${name},</h2>
