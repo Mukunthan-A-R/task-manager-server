@@ -17,7 +17,7 @@ const sendPasswordResetEmail = async (email, name, resetUrl) => {
   <div style="max-width: 600px; margin: 0 auto; padding: 32px 24px; font-family: 'Segoe UI', Roboto, Arial, sans-serif; color: #1f2937; background-color: #f9fafb; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
     
     <div style="text-align: center; background-color: #e3e9f9; padding: 24px; border-radius: 8px 8px 0 0; margin: -32px -24px 32px;">
-      <img src="https://i.postimg.cc/tJnY2cMs/Sandy-Soft.png" alt="done it logo" style="height: 64px; object-fit: contain;" />
+      <img src="https://i.postimg.cc/RFCT6bgW/cropped-circle-image.png" alt="done it logo" style="height: 64px; object-fit: contain;" />
     </div>
 
     <h2 style="font-size: 22px; margin-bottom: 12px;">Hi ${name},</h2>
