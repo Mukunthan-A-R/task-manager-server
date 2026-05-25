@@ -1,19 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const cookieParser = require("cookie-parser");
-
-// 🛠️ FIX 1: Updated relative paths (added ../) because this file lives inside the /api folder
 const authMiddleware = require("./middleware/authMiddleware");
-const { loggerMiddleware } = require("./middleware/logger.js");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
 // ✅ Body parser
 app.use(express.json());
+
 app.use(cookieParser());
 
-// ✅ CORS configuration
+// ✅ CORS configuration to allow all origins
 const corsOptions = {
   origin: [
     "http://localhost:5173",
@@ -22,12 +20,16 @@ const corsOptions = {
     "https://doneit.online",
   ],
   credentials: true,
+  // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  // allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+// ✅ Apply CORS middleware globally
 app.use(cors(corsOptions));
+
 app.options("*", cors(corsOptions));
 
-// 🛠️ FIX 2: Updated relative paths for all your route files
+// ✅ Middleware and Routes
 const task = require("./routes/tasks");
 const projectTasks = require("./routes/projectTasks");
 const userProjects = require("./routes/userProjects");
@@ -46,15 +48,15 @@ const taskAssignmentRoutes = require("./routes/taskAssignments");
 const usercontact = require("./routes/contact");
 const subscriptionRoutes = require("./routes/subscription");
 const aboutRoute = require("./routes/about");
+const { loggerMiddleware } = require("./middleware/logger.js");
 const chatbotRoute = require("./chatbot/chatRoute.js");
 
 // ✅ Route mounts
-app.use("/about", aboutRoute); // Changed from "/" to "/about" to prevent root routing conflicts on Vercel
+app.use("/", aboutRoute);
 app.use("/api", authentication);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
 app.use("/api/contact", usercontact);
-
 app.use(authMiddleware);
 app.use(loggerMiddleware);
 
@@ -73,18 +75,8 @@ app.use("/api/collab-projects", fetchCollabProjects);
 app.use("/api/user-password", userPasswordRoute);
 app.use("/api/project-activity", projectActivityRoutes);
 
-// Optional: Default root landing for health check
-app.get("/", (req, res) => {
-  res.send("🚀 DoneIt Serverless API is running smoothly!");
+// ✅ Start server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`🚀 Server running on port ${port}`);
 });
-
-// 🛠️ FIX 3: Only spin up the listener if running locally. Vercel ignores this block.
-if (process.env.NODE_ENV !== "production") {
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => {
-    console.log(`🚀 Local Server running on port ${port}`);
-  });
-}
-
-// 🛠️ CRITICAL: Export the app module for Vercel's serverless handler
-module.exports = app;
