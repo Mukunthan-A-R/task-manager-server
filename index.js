@@ -16,6 +16,7 @@ const corsOptions = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5186",
+    "https://doneitweb.netlify.app",
     "https://doneitapp.netlify.app",
     "https://doneit.online",
   ],
