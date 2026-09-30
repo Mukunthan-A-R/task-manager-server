@@ -11,9 +11,11 @@ const handleError = (err) => {
 
 // Get all tasks by user_id
 const getTasksByUserId = async (userId) => {
+  const currentDate = new Date().toISOString().split("T")[0];
+
   const client = await connectDB();
   const text = `
-    SELECT 
+    SELECT
       t.task_id,
       t.title,
       t.description,
@@ -22,22 +24,24 @@ const getTasksByUserId = async (userId) => {
       t.start_date,
       t.end_date,
       t.created_date,
-      p.project_id,
+      t.project_id,
       p.name AS project_name,
       u.user_id,
       u.name AS user_name
-    FROM 
-      tasks t
-    JOIN 
-      projects p ON t.project_id = p.project_id
-    JOIN 
-      users u ON p.created = u.user_id
-    WHERE 
-      u.user_id = $1
+  FROM tasks t
+  JOIN task_assignments ta
+      ON ta.task_id = t.task_id
+  JOIN users u
+      ON u.user_id = ta.user_id
+  JOIN projects p
+      ON p.project_id = t.project_id
+  WHERE ta.user_id = $1
+    AND t.start_date <= $2
+    AND t.end_date >= $2;
   `;
 
   try {
-    const res = await client.query(text, [userId]);
+    const res = await client.query(text, [userId, currentDate]);
     return { success: true, status: 200, data: res.rows };
   } catch (err) {
     return handleError(err);
