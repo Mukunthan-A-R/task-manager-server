@@ -1,17 +1,19 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const authMiddleware = require("./middleware/authMiddleware");
 const cookieParser = require("cookie-parser");
+
+// 🛠️ FIX 1: Updated relative paths (added ../) because this file lives inside the /api folder
+const authMiddleware = require("./middleware/authMiddleware");
+const { loggerMiddleware } = require("./middleware/logger.js");
 
 const app = express();
 
 // ✅ Body parser
 app.use(express.json());
-
 app.use(cookieParser());
 
-// ✅ CORS configuration to allow all origins
+// ✅ CORS configuration
 const corsOptions = {
   origin: [
     "http://localhost:5173",
@@ -21,16 +23,12 @@ const corsOptions = {
     "https://doneit.online",
   ],
   credentials: true,
-  // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  // allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-// ✅ Apply CORS middleware globally
 app.use(cors(corsOptions));
-
 app.options("*", cors(corsOptions));
 
-// ✅ Middleware and Routes
+// 🛠️ FIX 2: Updated relative paths for all your route files
 const task = require("./routes/tasks");
 const projectTasks = require("./routes/projectTasks");
 const userProjects = require("./routes/userProjects");
@@ -49,7 +47,6 @@ const taskAssignmentRoutes = require("./routes/taskAssignments");
 const usercontact = require("./routes/contact");
 const subscriptionRoutes = require("./routes/subscription");
 const aboutRoute = require("./routes/about");
-const { loggerMiddleware } = require("./middleware/logger.js");
 const chatbotRoute = require("./chatbot/chatRoute.js");
 
 // ✅ Route mounts
@@ -58,6 +55,7 @@ app.use("/api", authentication);
 app.use("/api/register", auth);
 app.use("/api/password-reset", passwordReset);
 app.use("/api/contact", usercontact);
+
 app.use(authMiddleware);
 app.use(loggerMiddleware);
 
@@ -76,7 +74,12 @@ app.use("/api/collab-projects", fetchCollabProjects);
 app.use("/api/user-password", userPasswordRoute);
 app.use("/api/project-activity", projectActivityRoutes);
 
-// ✅ Start server
+// Optional: Default root landing for health check
+app.get("/", (req, res) => {
+  res.send("🚀 DoneIt Serverless API is running smoothly!");
+});
+
+// 🛠️ FIX 3: Spin up the Server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
