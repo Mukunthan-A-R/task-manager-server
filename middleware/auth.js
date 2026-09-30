@@ -49,7 +49,6 @@ router.post("/", async (req, res) => {
       await confirmEmail(email, name, activationLink);
       // console.log(process.env.EMAIL_USER, process.env.EMAIL_APP_PASSWORD);
     } else {
-      console.error(err);
       res.status(500).json({ message: "Failed to Register User System Error" });
     }
     res.status(201).json({
