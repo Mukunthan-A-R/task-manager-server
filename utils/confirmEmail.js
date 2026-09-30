@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const path = require("path");
 
 const confirmEmail = async (email, name, activationLink) => {
   const transporter = nodemailer.createTransport({
@@ -8,6 +9,8 @@ const confirmEmail = async (email, name, activationLink) => {
       pass: process.env.EMAIL_APP_PASSWORD,
     },
   });
+
+  const logoPath = path.join(__dirname, "../assets/logo.png");
 
   await transporter.sendMail({
     from: `"Done It Team" <${process.env.EMAIL_USER}>`,
@@ -57,8 +60,9 @@ const confirmEmail = async (email, name, activationLink) => {
     attachments: [
       {
         filename: "logo.png",
-        path: "https://i.postimg.cc/RFCT6bgW/cropped-circle-image.png",
+        path: logoPath,
         cid: "doneitlogo",
+        contentType: "image/png",
       },
     ],
   });
